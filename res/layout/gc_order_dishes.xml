@@ -11,24 +11,30 @@
     	android:orientation="horizontal"
     	android:id="@+id/orderdishes_linearlayout_title"
 		android:layout_width="fill_parent"
-		android:layout_height="60dp"
+		android:layout_height="50dp"
 		android:background="@drawable/orderdishes_title_bar_gc"
     	>
       		<Button
    			android:id="@+id/orderdishes_title_button"
    		    android:background="@drawable/orderdishes_title_button_gc"
-   		    android:layout_width="60dp"
-   		    android:layout_height="60dp"
+   		    android:layout_width="40dp"
+   		    android:layout_marginLeft="5dp"
+   		    android:layout_height="46dp"
   		    android:layout_alignParentLeft="true"  
    			    />
 	        <TextView
+	        android:layout_marginTop="10dp"
         	android:id="@+id/orderdishes_title_text"
         	android:layout_width="fill_parent"
-        	android:layout_height="60dp"
+        	android:layout_height="wrap_content"
+        	android:gravity="center_vertical|center_horizontal"
         	android:textColor="#ffffff"
         	android:layout_toRightOf="@id/orderdishes_title_button"
-        	android:textSize="20dp"
+        	android:textSize="28dp"
         	android:text="菜单"
+        	android:layout_centerHorizontal="true"
+        	android:layout_centerVertical="true"
+        	android:textAppearance="?android:textAppearanceLarge"
         	/>	 
 	        </LinearLayout>
  		

@@ -73,7 +73,7 @@ public class MenuActivity extends Activity {
         };
         
         Map<String,String> totalTmp =  getTotal(getData());
-        showInfo = "总点菜数:"+totalTmp.get("dishNumber")+"  总价格:"+totalTmp.get("totalPrice");
+        showInfo = "总点菜数:"+totalTmp.get("dishNumber")+"  总价格:￥"+totalTmp.get("totalPrice")+"元";
         totalText.setText(showInfo);//这里进行一个展示；
         
 	}

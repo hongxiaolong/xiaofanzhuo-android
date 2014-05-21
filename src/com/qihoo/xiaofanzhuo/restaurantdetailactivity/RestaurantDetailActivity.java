@@ -252,7 +252,7 @@ public class RestaurantDetailActivity extends Activity implements
 			holder.customView.position = position;
 			holder.customView.setBackgroundBitmap(mBackgroundBitmap);
 
-			holder.customView.setTitleText("第" + position + "道菜");
+			holder.customView.setTitleText("第" + position + "道菜" + " ￥1" + position);
 			holder.customView.setSubTitleText("价格: " + position);
 
 			String imageURL = ImageHelper.getImageUrlFromUrlList(
