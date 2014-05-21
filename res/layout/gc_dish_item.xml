@@ -1,0 +1,65 @@
+<RelativeLayout   
+         xmlns:android="http://schemas.android.com/apk/res/android"   
+         android:layout_height="wrap_content"   
+         android:layout_width="wrap_content"
+         android:descendantFocusability="blocksDescendants"
+         >  
+       
+         <ImageView   
+               android:id="@+id/dish_image" 
+               android:layout_width="80dp"
+               android:layout_height="80dp"
+               android:layout_centerHorizontal="true"
+               />   		  
+         <TextView   
+               android:id="@+id/dish_info_name_price"
+               android:layout_width="wrap_content"     
+               android:layout_height="wrap_content"    
+               android:layout_below="@id/dish_image"
+               android:text="test"
+			   android:layout_centerHorizontal="true"
+               />  
+          <CheckBox
+            android:id="@+id/dish_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="false"  
+        	android:focusableInTouchMode="false"
+        	android:layout_alignRight="@id/dish_image"
+        	android:layout_alignTop="@id/dish_image"
+             /> 
+</RelativeLayout>  
+
+<!-- 
+<RelativeLayout   
+         xmlns:android="http://schemas.android.com/apk/res/android"   
+         android:layout_height="wrap_content"   
+         android:paddingBottom="4dip"
+         android:layout_width="fill_parent"
+         >  
+         
+    	<CheckBox
+            android:id="@+id/dish_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            
+             />
+         <ImageView   
+               android:id="@+id/dish_image" 
+               android:layout_centerHorizontal="true"
+               android:layout_width="60dp"
+               android:layout_height="60dp"
+               />   
+ 		 
+         <TextView   
+               android:id="@+id/dish_info_name_price"
+               android:layout_below="@id/dish_image" 
+               android:layout_width="wrap_content"     
+               android:layout_height="fill_parent"   
+               android:text="TextView01"   
+               android:layout_centerHorizontal="true"
+               />  
+               
+</RelativeLayout>  
+ -->

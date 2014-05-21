@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail_linerlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:id="@+id/navigation_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+        android:background="@drawable/hong_title_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="5dip"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:paddingTop="5dip" >
+
+        <ImageButton
+            android:id="@+id/button_back"
+            android:layout_width="35dp"
+            android:layout_height="42dp"
+            android:layout_gravity="left"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/hong_button_back" >
+        </ImageButton>
+
+        <TextView
+            android:id="@+id/detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="150dp"
+            android:text="大公鸡"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="#333333" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zone_relative_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="160dp"
+        android:layout_marginLeft="5dp" >
+
+        <LinearLayout
+            android:id="@+id/detail_text"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textview01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="35dp"
+                android:layout_weight="1"
+                android:text="人均：25"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="#333333" />
+
+            <TextView
+                android:id="@+id/textview02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="9dp"
+                android:layout_weight="1"
+                android:text="标签：川菜"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="#333333" />
+
+            <TextView
+                android:id="@+id/textview03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="9dp"
+                android:layout_weight="1"
+                android:text="地址：大山子北里301号"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="#333333" />
+
+            <TextView
+                android:id="@+id/textview04"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="9dp"
+                android:layout_weight="1"
+                android:text="电话：64736868"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="#333333" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_queue"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/detail_text"
+            android:layout_marginLeft="10dp"
+            android:maxHeight="1000dp"
+            android:maxWidth="1000dp"
+            android:scaleType="centerInside" />
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/pict_show_gridview"
+        android:layout_below="@id/zone_relative_layout"
+        layout="@layout/hong_detail_picts_gridview" />
+
+    <RelativeLayout
+        android:id="@+id/btn_support"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="@id/detail_text"
+        android:layout_below="@id/detail_text"
+        android:layout_gravity="center|bottom"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/btn_take_out"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/hong_take_out" />
+
+        <ImageButton
+            android:id="@+id/btn_praise"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="60dp"
+            android:layout_toRightOf="@id/btn_take_out"
+            android:background="@drawable/hong_unpraise" />
+
+        <ImageButton
+            android:id="@+id/btn_busy"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:layout_marginLeft="60dp"
+            android:layout_toRightOf="@id/btn_praise"
+            android:background="@drawable/hong_idle" />
+    </RelativeLayout>
+
+</LinearLayout>

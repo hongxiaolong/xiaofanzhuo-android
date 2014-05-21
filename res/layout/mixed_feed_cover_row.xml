@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:miles="http://schemas.android.com/apk/res/com.ckt.vas.miles"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/cover"
+        android:layout_width="fill_parent"
+        android:layout_height="160dip"
+        android:background="@drawable/linen_background_tile" >
+
+        <ImageView
+            android:id="@+id/cover_image"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitXY" 
+            android:src="@drawable/cover_overlay"
+            />
+
+        <ImageView
+            android:id="@+id/cover_track"
+            android:layout_width="4.0dip"
+            android:layout_height="26.0dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="72.0dip"
+            android:scaleType="fitXY"
+            android:src="@drawable/cover_track" />
+
+        <ImageView
+            android:id="@+id/cover_nowdot"
+            android:layout_width="16.0dip"
+            android:layout_height="16.0dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="23.0dip"
+            android:layout_marginLeft="66.0dip"
+            android:src="@drawable/cover_nowdot" />
+
+        <com.ckt.vas.miles.ui.views.CircularImage
+            android:id="@+id/cover_user_photo"
+            android:layout_width="54.0dip"
+            android:layout_height="54.0dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="61.0dip"
+            android:layout_marginLeft="47.0dip" />
+
+        <ImageView
+            android:layout_width="62.0dip"
+            android:layout_height="62.0dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="56.0dip"
+            android:layout_marginLeft="43.0dip"
+            android:src="@drawable/cover_avatar" />
+
+        <TextView
+            android:id="@+id/cover_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="20.0dip"
+            android:layout_marginLeft="100.0dip"
+            android:shadowColor="@color/cover_time_shadow"
+            android:shadowDx="0.0"
+            android:shadowDy="2.0"
+            android:shadowRadius="0.1"
+            android:textColor="@color/white"
+            android:textSize="16.0dip"
+             android:text="北京市朝阳区酒仙桥路14号"
+            android:textStyle="bold" />
+
+        <!-- friend apply request -->
+    </RelativeLayout>
+
+</LinearLayout>

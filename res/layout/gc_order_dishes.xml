@@ -1,0 +1,164 @@
+<RelativeLayout   
+    xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:orientation="vertical"   
+    android:id="@+id/orderdishes_linearlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    >
+       
+    <LinearLayout   
+    	android:orientation="horizontal"
+    	android:id="@+id/orderdishes_linearlayout_title"
+		android:layout_width="fill_parent"
+		android:layout_height="60dp"
+		android:background="@drawable/orderdishes_title_bar_gc"
+    	>
+      		<Button
+   			android:id="@+id/orderdishes_title_button"
+   		    android:background="@drawable/orderdishes_title_button_gc"
+   		    android:layout_width="60dp"
+   		    android:layout_height="60dp"
+  		    android:layout_alignParentLeft="true"  
+   			    />
+	        <TextView
+        	android:id="@+id/orderdishes_title_text"
+        	android:layout_width="fill_parent"
+        	android:layout_height="60dp"
+        	android:textColor="#ffffff"
+        	android:layout_toRightOf="@id/orderdishes_title_button"
+        	android:textSize="20dp"
+        	android:text="菜单"
+        	/>	 
+	        </LinearLayout>
+ 		
+ 		   <Button
+       		 android:id="@+id/orderdishes_menu_button"
+   		     android:layout_height="wrap_content"
+   		     android:layout_width="wrap_content"
+  	    	 android:background="@drawable/orderdishes_bottom_button_gc"   
+ 			 android:layout_alignParentBottom="true"
+ 			 android:layout_centerInParent="true"
+ 			 android:text="生成菜單"
+        	/>
+		
+	    <GridView
+	        android:layout_margin="20px"
+	        android:id="@+id/orderdishes_gridview"
+	        android:layout_below="@id/orderdishes_linearlayout_title"
+	        android:layout_above="@id/orderdishes_menu_button"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:columnWidth="100dp"
+	        android:gravity="center"
+	        android:horizontalSpacing="10dp"
+	        android:verticalSpacing="10dp" 
+	        android:numColumns="3"
+	        android:stretchMode="columnWidth"
+	       >
+	    </GridView>   	   
+
+	    
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<LinearLayout   
+    xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:orientation="vertical"   
+    android:id="@+id/orderdishes_linearlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    
+    <LinearLayout   
+    	android:orientation="horizontal"
+    	android:id="@+id/orderdishes_linearlayout_title"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/orderdishes_title_bar_gc"
+    	>
+   			<Button
+   			android:id="@+id/orderdishes_title_button"
+   		    android:background="@drawable/orderdishes_title_button_gc"
+   		    android:layout_width="wrap_content"
+   		    android:layout_height="wrap_content"
+   		    android:layout_gravity="center|left"
+   			    />
+   			    
+	        <TextView
+        	android:id="@+id/orderdishes_title_text"
+        	android:layout_width="fill_parent"
+        	android:layout_height="fill_parent"
+        	android:textColor="#ffffff"
+        	android:gravity="center|left"
+        	android:textSize="20dp"
+        	android:text="菜单"
+        	/>
+	        
+		</LinearLayout>
+		
+	    <GridView
+	        android:id="@+id/orderdishes_gridview"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:columnWidth="90dp"
+	        android:gravity="center"
+	        android:horizontalSpacing="10dp"
+	        android:numColumns="3"
+	        android:stretchMode="columnWidth"
+	        android:verticalSpacing="10dp" >
+	    </GridView>  
+	    
+	    
+	    <LinearLayout
+	    	android:id="@+id/orderdishes_linearlayout_menubutton"
+	    	android:gravity="bottom"
+	    	android:layout_height="fill_parent"
+	    	android:layout_width="fill_parent"
+	        >
+ 		   <Button
+       		 android:id="@+id/orderdishes_menu_button"
+   		     android:layout_height="wrap_content"
+   		     android:layout_width="fill_parent"
+  	    	 android:background="@drawable/orderdishes_bottom_button_gc"   
+  	    	 android:layout_gravity="bottom" 		
+        	/>
+ 		</LinearLayout>
+	    
+</LinearLayout>
+ -->
