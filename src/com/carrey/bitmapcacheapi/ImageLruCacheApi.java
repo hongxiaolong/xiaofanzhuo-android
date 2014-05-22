@@ -16,7 +16,7 @@ import android.util.Log;
  */
 public class ImageLruCacheApi{
 	
-	private static final String TAG = "ImageHelper";
+	private static final String TAG = "ImageLruCacheApi";
 	
 	//图片服务器ip地址
 	private String webServerStr;
@@ -29,7 +29,8 @@ public class ImageLruCacheApi{
 	//下载任务队列 Map的key代表要下载的图片url，后面的List队列包含所有请求这张图片的回调
 	public HashMap<String, ArrayList<SoftReference<BitmapCallback>>> mCallbacks = 
 				new HashMap<String, ArrayList<SoftReference<BitmapCallback>>>();
-	
+	public HashMap<String, ArrayList<SoftReference<BitmapViewCallback>>> mViewCallbacks = 
+			new HashMap<String, ArrayList<SoftReference<BitmapViewCallback>>>();
 	//LruCache
 	private static final int MEM_MAX_SIZE = 4 * 1024 * 1024;// MEM 4MB
 	private LruCache<String, Bitmap> mMemoryCache = null;
@@ -89,6 +90,9 @@ public class ImageLruCacheApi{
 				
 	}
 	
+	/*
+	 * 自定义控件显示图片：Customer
+	 */
 	public Bitmap getBitmap(String url, BitmapCallback callback) {
 		if (url == null) {
 			return null;
@@ -115,6 +119,74 @@ public class ImageLruCacheApi{
 					callbacks = new ArrayList<SoftReference<BitmapCallback>>();
 					callbacks.add(new SoftReference<BitmapCallback>(callback));
 					mCallbacks.put(url, callbacks);
+				}
+			}
+			
+			poolManager.start();
+			poolManager.addAsyncTask(new MyThreadPoolTask(url, mDiskCacke, mTaskCallback));
+		}
+		return null;
+	}
+	
+	/*
+	 * 2014-05-21
+	 */
+	private String uuid = null;
+	
+	public void setUUID(String uuid) {
+		this.uuid = uuid;
+	}
+	
+	public String getUUID() {
+		return this.uuid;
+	}
+	
+	//ListView、GridView重载图片的回调函数
+	public BitmapViewCallback viewCallback = new BitmapViewCallback() {
+
+		@Override
+		public void onReady(String key, Bitmap bitmap) {
+			// TODO Auto-generated method stub
+			if (bitmap != null && key != null &&  ImageLruCacheApi.this.uuid != null) {
+				if (key.equals(ImageLruCacheApi.this.uuid)) {
+					//postInvalidate();
+					Log.i(TAG, "BitmapViewCallback");
+				}
+			}
+		}
+		
+	};
+	
+	/*
+	 * ListView、GridView显示图片
+	 * 调用时需要在Adapter里分别调用setUUID()，getBitmap(arg1, ImageLruCacheApiClass.viewCallback)
+	 */
+	public Bitmap getBitmap(String url, BitmapViewCallback callback) {
+		if (url == null) {
+			return null;
+		}
+		
+		synchronized (mMemoryCache) {
+			Bitmap bitmap = mMemoryCache.get(url);
+			if (bitmap != null && !bitmap.isRecycled()) {
+				Log.i(TAG, "get bitmap from mem: url = " + url);
+				return bitmap;
+			}
+		}
+		
+		//内存中没有，异步回调
+		if (callback != null) {
+			ArrayList<SoftReference<BitmapViewCallback>> callbacks = null;
+			synchronized (mViewCallbacks) {
+				if ((callbacks = mViewCallbacks.get(url)) != null) {
+					if (!callbacks.contains(callback)) {
+						callbacks.add(new SoftReference<BitmapViewCallback>(callback));
+					}
+					return null;
+				} else {
+					callbacks = new ArrayList<SoftReference<BitmapViewCallback>>();
+					callbacks.add(new SoftReference<BitmapViewCallback>(callback));
+					mViewCallbacks.put(url, callbacks);
 				}
 			}
 			
