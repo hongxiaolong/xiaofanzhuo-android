@@ -6,37 +6,32 @@ import java.util.List;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.RotateAnimation;
-import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
 import com.carrey.bitmapcachedemo.R;
 import com.ckt.vas.miles.dto.ActivityMessage;
 import com.ckt.vas.miles.ui.adapters.PublicActivityAdapter;
 import com.ckt.vas.miles.ui.views.ExtendedListView;
 import com.ckt.vas.miles.ui.views.ExtendedListView.OnPositionChangedListener;
-import com.ckt.vas.miles.ui.views.InOutFrameLayout;
 import com.ckt.vas.miles.ui.views.MenuRightAnimations;
 
 public class PublicActivity extends Activity implements OnTouchListener, OnPositionChangedListener {
+	
+	private static final String TAG = "PublicActivity";
+	
     /** Called when the activity is first created. */
     private boolean areButtonsShowing;
 
@@ -183,8 +178,13 @@ public class PublicActivity extends Activity implements OnTouchListener, OnPosit
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         System.out.println("ontouch...................");
-        onClickView(v, true);
-        return false;
+        try {
+			onClickView(v, true);
+		} catch (Exception e) {
+			// TODO: handle exception
+			Log.i(TAG, "PublicActivity-onTouch");
+		}
+		return false;
     }
 
     private float[] computMinAndHour(int currentMinute, int currentHour) {
