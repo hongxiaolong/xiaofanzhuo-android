@@ -13,14 +13,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,9 +30,7 @@ import com.carrey.customview.customview.CustomView;
 import com.qihoo.orderdishes.gc.OrderDishesMainActivity;
 import com.qihoo.xiaofanzhuo.mainactivity.Activity_res;
 import com.qihoo.xiaofanzhuo.mainactivity.ForTestUrlString;
-import com.qihoo.xiaofanzhuo.mainactivity.ButtonClickEffect;
 import com.qihoo.xiaofanzhuo.mainactivity.MyGlobalClass;
-import com.qihoo.xiaofanzhuo.mainactivity.ZoneShowActivity;
 
 /**
  * RestaurantDetailActivity

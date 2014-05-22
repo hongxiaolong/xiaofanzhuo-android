@@ -17,6 +17,7 @@ public class MyThreadPoolTask extends ThreadPoolTask {
 	private DiskLruCache mDiskLruCache;
 	
 	private BitmapCallback callback;
+	private BitmapViewCallback viewback;
 	
 	public MyThreadPoolTask(String url, DiskLruCache mDiskLruCache, BitmapCallback callback) {
 		super(url);
@@ -24,6 +25,12 @@ public class MyThreadPoolTask extends ThreadPoolTask {
 		this.callback = callback;
 	}
 
+	public MyThreadPoolTask(String url, DiskLruCache mDiskLruCache, BitmapViewCallback callback) {
+		super(url);
+		this.mDiskLruCache = mDiskLruCache;
+		this.viewback = callback;
+	}
+	
 	@Override
 	public void run() {
 		Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
@@ -42,6 +49,9 @@ public class MyThreadPoolTask extends ThreadPoolTask {
 		
 		if (callback != null) {
 			callback.onReady(url, bitmap);
+		}
+		if (viewback != null) {
+			viewback.onReady(url, bitmap);
 		}
 	}
 

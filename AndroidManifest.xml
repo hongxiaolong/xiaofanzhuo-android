@@ -30,8 +30,6 @@
         </activity>
         <activity android:name="com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity" >
         </activity>
-        <activity android:name="com.qihoo.xiaofanzhuo.mainactivity.ForTestMainActivity" >
-        </activity>
         <activity android:name="com.qihoo.xiaofanzhuo.mainactivity.LoginActivity" >
         </activity>
         <activity
@@ -49,6 +47,10 @@
         <activity
             android:name="com.qihoo.xiaofanzhuo.restaurantdetailactivity.QueueNumActivity" >
         </activity>
+        <activity
+            android:name="com.qihoo.flipview.FlipHorizontalLayoutActivity" >
+        </activity>
+        
     </application>
 
 </manifest>

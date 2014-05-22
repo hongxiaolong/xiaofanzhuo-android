@@ -2,6 +2,7 @@ package com.qihoo.xiaofanzhuo.mainactivity;
 
 import com.carrey.bitmapcachedemo.R;
 import com.ckt.vas.miles.ui.activities.PublicActivity;
+import com.qihoo.flipview.FlipHorizontalLayoutActivity;
 import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
 
 import android.app.Activity;
@@ -57,11 +58,11 @@ public class LoginActivity extends Activity {
        	  //判断自动登陆多选框状态
        	  if(sp.getBoolean("AUTO_ISCHECK", false))
        	  {
-//       		     //设置默认是自动登录状态
-//       		     auto_login.setChecked(true);
-//       		    //跳转界面
-//				Intent intent = new Intent(LoginActivity.this, PublicActivity.class);
-//				LoginActivity.this.startActivity(intent);
+       		     //设置默认是自动登录状态
+       		     auto_login.setChecked(true);
+       		    //跳转界面
+				Intent intent = new Intent(LoginActivity.this, FlipHorizontalLayoutActivity.class);
+				LoginActivity.this.startActivity(intent);
 				
        	  }
         }
@@ -86,7 +87,7 @@ public class LoginActivity extends Activity {
 					  editor.commit();
 					}
 					//跳转界面
-					Intent intent = new Intent(LoginActivity.this,PublicActivity.class);
+					Intent intent = new Intent(LoginActivity.this,FlipHorizontalLayoutActivity.class);
 					LoginActivity.this.startActivity(intent);
 					//finish();
 					
