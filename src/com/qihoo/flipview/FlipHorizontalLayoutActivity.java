@@ -15,10 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-
+/*
+ * FlipHorizontalLayoutActivity
+ * by hongxiaolong
+ */
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import com.aphidmobile.flip.FlipViewController;
 import com.carrey.bitmapcachedemo.R;
@@ -38,9 +42,16 @@ public class FlipHorizontalLayoutActivity extends Activity {
 
     flipView = new FlipViewController(this, FlipViewController.HORIZONTAL);
 
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    WindowsConstant.displayWidth = displayMetrics.widthPixels;
+    WindowsConstant.displayHeight = displayMetrics.heightPixels;
+    
+    MenuAdapter mAdapter = new MenuAdapter(this);
 //    flipView.setAdapter(new TravelAdapter(this));
-    flipView.setAdapter(new MenuAdapter(this));
+    flipView.setAdapter(mAdapter);
     setContentView(flipView);
+    mAdapter.notifyDataSetChanged();
   }
 
   @Override
