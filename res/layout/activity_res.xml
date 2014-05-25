@@ -25,7 +25,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:scaleType="centerInside"
-        android:src="@drawable/distance_s" >
+        android:src="@drawable/averagecost_s" >
         
         </ImageButton>
         
@@ -39,7 +39,15 @@
         
         </ImageButton>
         
+         <ImageButton
+             android:id="@+id/iswaimai"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:scaleType="centerInside"
+             android:src="@drawable/deleverable" >
         
+        </ImageButton>
         
         
 </LinearLayout>
