@@ -1,10 +1,5 @@
 package com.qihoo.xiaofanzhuo.mainactivity;
 
-import com.carrey.bitmapcachedemo.R;
-import com.ckt.vas.miles.ui.activities.PublicActivity;
-import com.qihoo.flipview.FlipHorizontalLayoutActivity;
-import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,15 +7,18 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import com.carrey.bitmapcachedemo.R;
+import com.qihoo.xiaofanzhuo.restaurantdetailactivity.MainActivity;
 
 public class LoginActivity extends Activity {
 	
@@ -61,7 +59,7 @@ public class LoginActivity extends Activity {
        		     //设置默认是自动登录状态
        		     auto_login.setChecked(true);
        		    //跳转界面
-				Intent intent = new Intent(LoginActivity.this, FlipHorizontalLayoutActivity.class);
+				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 				LoginActivity.this.startActivity(intent);
 				
        	  }
@@ -87,7 +85,7 @@ public class LoginActivity extends Activity {
 					  editor.commit();
 					}
 					//跳转界面
-					Intent intent = new Intent(LoginActivity.this,FlipHorizontalLayoutActivity.class);
+					Intent intent = new Intent(LoginActivity.this,MainActivity.class);
 					LoginActivity.this.startActivity(intent);
 					//finish();
 					
