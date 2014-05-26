@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class HttpToServer {
 		mBussinessList = new ArrayList<BusinessData>();
 		requestFromServer(context, requeseCode);
 		mDatas = new ZoneListData(mResult);
+		mBussinessList = mDatas.getZoneListData();
 	}
 
 	public ZoneListData getZoneData() {
@@ -45,7 +47,7 @@ public class HttpToServer {
 
 	public static String sendToServer(String httpServer, String httpCode) {
 		String ret = "";
-		String finalServer = httpServer + httpCode;
+		String finalServer = httpServer + URLEncoder.encode(httpCode);
 		URL url = null;
 		try {
 			url = new URL(finalServer);

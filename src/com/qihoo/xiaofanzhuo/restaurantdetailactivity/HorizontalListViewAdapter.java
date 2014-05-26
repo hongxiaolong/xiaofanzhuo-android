@@ -1,10 +1,10 @@
 package com.qihoo.xiaofanzhuo.restaurantdetailactivity;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +16,9 @@ import com.carrey.bitmapcachedemo.R;
 import com.example.android.bitmapfun.util.ImageFetcher;
 
 public class HorizontalListViewAdapter extends BaseAdapter{
+	
+	private static final String TAG = "HorizontalListViewAdapter";
+	
 	private LinkedList<String> mInfos;
 	ImageFetcher mImageFetcher;
 	private Context mContext;
@@ -46,7 +49,7 @@ public class HorizontalListViewAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		String duitangInfo = mInfos.get(position);
+		String duitangInfo = mInfos.get(position).toString();
 		
 		ViewHolder holder;
 		if(convertView==null){
@@ -65,7 +68,8 @@ public class HorizontalListViewAdapter extends BaseAdapter{
 		}
 		
 		holder.mTitle.setText("￥ " + position);
-		mImageFetcher.loadImage(duitangInfo, holder.mImage);
+		mImageFetcher.loadImage(duitangInfo.toString(), holder.mImage);
+		Log.i(TAG, duitangInfo);
 //		iconBitmap = getPropThumnail(imageURL);
 //		holder.mImage.setImageBitmap(iconBitmap);
 //		holder.mImage.setImageBitmap(iconBitmap);

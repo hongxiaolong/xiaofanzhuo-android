@@ -24,7 +24,7 @@ public class ZoneListData {
 	
 	private String[] splitFromString(String orginString)
 	{
-		return orginString.split("/n");
+		return orginString.split("\n");
 	}
 	
 	public List<BusinessData> getZoneListData()

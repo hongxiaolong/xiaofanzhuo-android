@@ -1,14 +1,9 @@
 package com.qihoo.xiaofanzhuo.restaurantdetailactivity;
 
-import java.io.IOException;
 import java.util.LinkedList;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,12 +12,15 @@ import android.widget.ImageView;
 
 import com.carrey.bitmapcachedemo.R;
 import com.example.android.bitmapfun.util.ImageFetcher;
+import com.qihoo.xiaofanzhuo.datafromserver.HttpToServer;
 import com.qihoo.xiaofanzhuo.mainactivity.ForTestUrlString;
 
 public class ForTestMainActivity extends Activity {
 
+	private static final String TAG = "ForTestMainActivity";
+	
 	private ImageFetcher mImageFetcher;
-	private ContentTask task = new ContentTask(this, 2);
+	private HttpToServer mHttpToServer;
 
 	HorizontalListView hListView;
 	HorizontalListViewAdapter hListViewAdapter;
@@ -33,8 +31,34 @@ public class ForTestMainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fortest_horizontal_activity_main);
+		mImageFetcher = new ImageFetcher(this, 240);
+		mImageFetcher.setLoadingImage(R.drawable.empty_photo);
+		
 		initUI();
-		AddItemToContainer(1);
+		
+		
+		try {
+			
+			mHttpToServer = new HttpToServer(this, "GetShopInfoByLocation____大山子");
+			LinkedList<String> imageUrlList = new LinkedList<String>();
+			
+			for(int i = 0; i < mHttpToServer.getBusinessDataList().size(); ++i)
+				imageUrlList.add((mHttpToServer.getBusinessDataList().get(i).getShopImgUrl()));
+			
+//			for (int i = 0; i < ForTestUrlString.imageUrlString.length; ++i)
+//				imageUrlList.add(ForTestUrlString.imageUrlString[i]);
+
+				hListViewAdapter.addItemLast(imageUrlList);
+				hListViewAdapter.notifyDataSetChanged();
+				
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Override
@@ -45,8 +69,8 @@ public class ForTestMainActivity extends Activity {
 	}
 
 	public void initUI() {
-		mImageFetcher = new ImageFetcher(this, 240);
-		mImageFetcher.setLoadingImage(R.drawable.empty_photo);
+		
+		
 		hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
 		previewImg = (ImageView) findViewById(R.id.image_preview);
 		String[] titles = { "怀师", "南怀瑾军校", "闭关", "南怀瑾", "南公庄严照", "怀师法相" };
@@ -57,6 +81,7 @@ public class ForTestMainActivity extends Activity {
 		hListViewAdapter = new HorizontalListViewAdapter(
 				getApplicationContext(), mImageFetcher);
 		hListView.setAdapter(hListViewAdapter);
+		
 		hListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -65,72 +90,8 @@ public class ForTestMainActivity extends Activity {
 				previewImg.setImageResource(ids[position]);
 				hListViewAdapter.setSelectIndex(position);
 				hListViewAdapter.notifyDataSetChanged();
-
 			}
 		});
 
 	}
-
-	private void AddItemToContainer(int type) {
-		if (task.getStatus() != Status.RUNNING) {
-			String url = "hongxiaolong";
-			Log.d("MainActivity", "current url:" + url);
-			ContentTask task = new ContentTask(this, type);
-			task.execute(new LinkedList<String>());
-
-		}
-	}
-
-	private class ContentTask extends
-			AsyncTask<LinkedList<String>, Integer, LinkedList<String>> {
-
-		private Context mContext;
-		private int mType = 1;
-
-		public ContentTask(Context context, int type) {
-			super();
-			mContext = context;
-			mType = type;
-		}
-
-		@Override
-		protected LinkedList<String> doInBackground(
-				LinkedList<String>... params) {
-
-			try {
-				return addNewUrlToContainer(params[0]);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		protected void onPostExecute(LinkedList<String> result) {
-			if (mType == 1) {
-
-				hListViewAdapter.addItemTop(result);
-				hListViewAdapter.notifyDataSetChanged();
-
-			} else if (mType == 2) {
-				hListViewAdapter.addItemLast(result);
-				hListViewAdapter.notifyDataSetChanged();
-
-			}
-
-		}
-
-		@Override
-		protected void onPreExecute() {
-		}
-
-		public LinkedList<String> addNewUrlToContainer(LinkedList<String> url)
-				throws IOException {
-			LinkedList<String> duitangs = new LinkedList<String>();
-			for (int i = 0; i < ForTestUrlString.imageUrlString.length; ++i)
-				duitangs.add(ForTestUrlString.imageUrlString[i]);
-			return duitangs;
-		}
-	}
-
 }
