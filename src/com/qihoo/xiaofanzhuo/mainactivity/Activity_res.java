@@ -57,7 +57,7 @@ import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 import android.os.Build;
 
-public class Activity_res extends Activity implements OnScrollListener 
+public class Activity_res extends Activity 
 {
 
 	ProgressDialog dialog;
@@ -182,6 +182,12 @@ public class Activity_res extends Activity implements OnScrollListener
         	int position, long id) 
         	{				
 				Intent intent = new Intent(Activity_res.this, RestaurantDetailActivity.class); 
+				
+				intent.putExtra("name", "那家小馆");
+				intent.putExtra("price", "人均价格:80");
+				intent.putExtra("type", "鲁菜，聚会");
+				intent.putExtra("location", "酒仙桥路6号院");
+				intent.putExtra("phone", "10086");
 				startActivity(intent);
         	// TODO Auto-generated method stub
         	}
@@ -403,7 +409,7 @@ public class Activity_res extends Activity implements OnScrollListener
     				dialog.cancel();
     				if(list.getFooterViewsCount()==0)
     					list.addFooterView(loadingView);
-    				new MyAsyncTask_add().execute(" ");
+    			    new MyAsyncTask_add().execute(" ");
     			}
     			else
     				if(msg.what==2)
@@ -424,7 +430,7 @@ public class Activity_res extends Activity implements OnScrollListener
     			}
         };
         
-        
+        //adapter.notifyDataSetChanged();
     }
     
     
@@ -621,9 +627,12 @@ public class Activity_res extends Activity implements OnScrollListener
 		@Override
 			protected String doInBackground(String... params) 
 		{
-				getdata();
-				getdata();
-				getdata();
+			    try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				getdata();
 	        	Message msg = new Message();
 				msg.what = 2;
@@ -644,39 +653,7 @@ public class Activity_res extends Activity implements OnScrollListener
 		}
     
     
-	@Override
-	public void onScroll(AbsListView view, int firstVisibleItem,  
-            int visibleItemCount, int totalItemCount) {
-		// TODO Auto-generated method stub
-		
-		this.last_item_position=firstVisibleItem + visibleItemCount - 1;
-		this.firstVisibleItem=firstVisibleItem;
-		this.visibleItemCount=visibleItemCount;
-		this.totalItemCount=totalItemCount;
-		
-		 if (last_item_position == totalItemCount - 2) 
-	        {
-	        	if(!isloading)
-	        	{
-	        		isloading=true;
-	        		if(list.getFooterViewsCount()==0)
-	        		list.addFooterView(loadingView);
-	        		new MyAsyncTask_add().execute("");
-	        	}
-	        }
-		
-		
-	}
-
-
-	@Override
-	public void onScrollStateChanged(AbsListView arg0, int arg1) 
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
-    
+	
    
     
 }

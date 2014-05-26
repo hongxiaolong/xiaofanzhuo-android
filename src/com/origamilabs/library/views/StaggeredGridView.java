@@ -54,7 +54,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.Adapter;
 import android.widget.ListAdapter;
 
 /** ListView and GridView just not complex enough? Try StaggeredGridView!
@@ -182,13 +181,13 @@ public class StaggeredGridView extends ViewGroup {
 
 	/** The item id of the currently selected item. */
 	long mSelectedRowId = INVALID_ROW_ID;
-	// /** Ԫ��֮����ϱ߾� */
+	// /** 元锟斤拷之锟斤拷锟斤拷媳呔锟?*/
 	// private int mItemTopMargin;
-	// /** Ԫ��֮����±߾� */
+	// /** 元锟斤拷之锟斤拷锟斤拷卤呔锟?*/
 	// private int mItemBottomMargin;
-	// /** Ԫ��֮�����߾� */
+	// /** 元锟斤拷之锟斤拷锟斤拷锟竭撅拷 */
 	// private int mItemLeftMargin;
-	// /** Ԫ��֮����ұ߾� */
+	// /** 元锟斤拷之锟斤拷锟斤拷冶呔锟?*/
 	// private int mItemRightMargin;
 
 	private int mLastScrollState = OnScrollListener.SCROLL_STATE_IDLE;
@@ -553,17 +552,14 @@ public class StaggeredGridView extends ViewGroup {
 	}
 
 	// /**
-	// * ����Ԫ��֮��ļ��
+	// * 锟斤拷锟斤拷元锟斤拷之锟斤拷募锟斤拷
 	// *
 	// * @param left
-	// * ����
+	// * 锟斤拷锟斤拷
 	// * @param top
-	// * �ϼ��
-	// * @param right
-	// * �Ҽ��
-	// * @param bottom
-	// * �¼��
-	// */
+	// * 锟较硷拷锟?	// * @param right
+	// * 锟揭硷拷锟?	// * @param bottom
+	// * 锟铰硷拷锟?	// */
 	// public void setItemMargin(int left, int top, int right, int bottom) {
 	// final boolean needsPopulate = (left != mItemLeftMargin)
 	// || (top != mItemTopMargin) || (right != mItemRightMargin)
@@ -578,7 +574,7 @@ public class StaggeredGridView extends ViewGroup {
 	// }
 	//
 	// /**
-	// * ����Ԫ��֮��ļ��
+	// * 锟斤拷锟斤拷元锟斤拷之锟斤拷募锟斤拷
 	// *
 	// * @param margin
 	// */
@@ -1008,7 +1004,7 @@ public class StaggeredGridView extends ViewGroup {
 			mSelectorRect.setEmpty();
 		}
 		invokeOnItemScrollListener();
-		// ��ʾscrollbar
+		// 锟斤拷示scrollbar
 		if (!awakenScrollBars()) {
 			invalidate();
 		}

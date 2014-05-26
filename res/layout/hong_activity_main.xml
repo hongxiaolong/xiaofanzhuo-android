@@ -3,7 +3,7 @@
     xmlns:staggered="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    tools:context=".MenuMainActivity" >
 
     <com.origamilabs.library.views.StaggeredGridView
         android:id="@+id/staggeredGridView1"

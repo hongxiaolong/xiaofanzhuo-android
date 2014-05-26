@@ -1,10 +1,10 @@
 package com.qihoo.xiaofanzhuo.restaurantdetailactivity;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -15,15 +15,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.carrey.bitmapcacheapi.ImageHelper;
 import com.carrey.bitmapcacheapi.ImageLruCacheApi;
 import com.carrey.bitmapcachedemo.R;
 import com.carrey.customview.customview.CustomView;
@@ -54,22 +52,16 @@ public class RestaurantDetailActivity extends Activity implements
 	private TextView textView04;
 	// 店家展示信息
 	private String textString[] = new String[5];
-	// "大公鸡",
-	// "人均：25",
-	// "川菜",
-	// "大山子北里301号",
-	// "64736868"
-	// };
 
-	private ImageButton buttonQueue;
 	private ImageButton buttonTakeOut;
 	private ImageButton buttonPraise;
 	private ImageButton buttonBusy;
 	private ImageButton buttonBack;
 
-	private GridView gridView;
-	private DetailGridAdapter adapter;
 	private MyGlobalClass appGlobal;
+
+	private HorizontalListView hListView;
+	private HorizontalListViewAdapter hListViewAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +84,36 @@ public class RestaurantDetailActivity extends Activity implements
 		textString[4] = extras.getString("phone");
 
 		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		appGlobal = (MyGlobalClass) getApplication(); // 获取应用程序
 
 		lruCache = new ImageLruCacheApi("10.65.7.234");
 		lruCache.LruCacheInit();
 		for (int i = 0; i < ForTestUrlString.imageUrlString.length; ++i)
 			lruCache.getUrlList().add(ForTestUrlString.imageUrlString[i]);
 
-		appGlobal = (MyGlobalClass) getApplication(); // 获取应用程序
+		textViewInit();
+		buttonInit();
+		activityInit();
 
+	}
+
+	public void activityInit() {
+		hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
+		hListViewAdapter = new HorizontalListViewAdapter(
+				getApplicationContext(), (ArrayList<String>)lruCache.getUrlList());
+		hListView.setAdapter(hListViewAdapter);
+		
+		hListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				hListViewAdapter.setSelectIndex(position);
+				hListViewAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	public void textViewInit() {
 		// 设置自定义字体
 		textView = (TextView) this.findViewById(R.id.detail_title);
 		textView01 = (TextView) this.findViewById(R.id.textview01);
@@ -120,7 +134,9 @@ public class RestaurantDetailActivity extends Activity implements
 		textView02.setText(textString[2]);
 		textView03.setText(textString[3]);
 		textView04.setText(textString[4]);
+	}
 
+	public void buttonInit() {
 		buttonBack = (ImageButton) findViewById(R.id.button_back);
 		buttonBack.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -128,16 +144,10 @@ public class RestaurantDetailActivity extends Activity implements
 			}
 		});
 
-		buttonQueue = (ImageButton) findViewById(R.id.btn_queue);
 		buttonTakeOut = (ImageButton) findViewById(R.id.btn_take_out);
 		buttonPraise = (ImageButton) findViewById(R.id.btn_praise);
 		buttonBusy = (ImageButton) findViewById(R.id.btn_busy);
 
-		if (appGlobal.getQueueStatus())
-			buttonQueue
-					.setBackgroundResource(R.drawable.hong_img_queue_pressed);
-		else
-			buttonQueue.setBackgroundResource(R.drawable.hong_img_queue);
 		if (appGlobal.getBusyStatus())
 			buttonBusy.setBackgroundResource(R.drawable.hong_busy);
 		else
@@ -146,27 +156,6 @@ public class RestaurantDetailActivity extends Activity implements
 			buttonPraise.setBackgroundResource(R.drawable.hong_praise);
 		else
 			buttonPraise.setBackgroundResource(R.drawable.hong_unpraise);
-
-		buttonQueue.setOnTouchListener(new View.OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					appGlobal.setQueueStatus(true);
-					// 重新设置按下时的背景图片
-					buttonQueue
-							.setBackgroundResource(R.drawable.hong_img_queue_pressed);
-					Intent intent = new Intent();
-					intent.setClass(RestaurantDetailActivity.this,
-							QueueNumActivity.class);
-					startActivity(intent);
-				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-					// 再修改为抬起时的正常图片
-					if (!appGlobal.getQueueStatus())
-						buttonQueue
-								.setBackgroundResource(R.drawable.hong_img_queue);
-				}
-				return false;
-			}
-		});
 
 		buttonPraise.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -198,10 +187,6 @@ public class RestaurantDetailActivity extends Activity implements
 				return false;
 			}
 		});
-
-		gridView = (GridView) findViewById(R.id.pict_gridview);
-		adapter = new DetailGridAdapter();
-		gridView.setAdapter(adapter);
 	}
 
 	@Override
@@ -210,77 +195,14 @@ public class RestaurantDetailActivity extends Activity implements
 		super.onDestroy();
 	}
 
-	private class DetailGridAdapter extends BaseAdapter {
-		private Bitmap mBackgroundBitmap;
-
-		public DetailGridAdapter() {
-			mBackgroundBitmap = BitmapFactory.decodeResource(getResources(),
-					R.drawable.item_bg);
-		}
-
-		@Override
-		public int getCount() {
-			return 12;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return 0;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ViewHolder holder = null;
-			if (convertView == null) {
-				holder = new ViewHolder();
-				convertView = inflater.inflate(R.layout.item, null);
-				holder.customView = (CustomView) convertView
-						.findViewById(R.id.customview);
-				convertView.setTag(holder);
-			} else {
-				holder = (ViewHolder) convertView.getTag();
-			}
-			holder.customView.position = position;
-			holder.customView.setBackgroundBitmap(mBackgroundBitmap);
-
-			holder.customView.setTitleText("第" + position + "道菜" + " ￥1" + position);
-			holder.customView.setSubTitleText("价格: " + position);
-
-			String imageURL = ImageHelper.getImageUrlFromUrlList(
-					lruCache.getUrlList(), position);
-			if (0 == holder.customView.position) {
-				holder.customView.setTitleText("推荐菜");
-				imageURL = "http://m3.img.srcdd.com/farm4/d/2014/0519/16/463B5122527864E949ECFED82E85E33C_B1280_1280_540_524.png";
-			}
-			if (4 == holder.customView.position) {
-				holder.customView.setTitleText("特价菜");
-				imageURL = "http://m1.img.srcdd.com/farm4/d/2014/0519/16/DCE523105C7000D1793EB907827C5674_B1280_1280_540_524.png";
-			}
-			if (8 == holder.customView.position) {
-				holder.customView.setTitleText("套餐");
-				imageURL = "http://m3.img.srcdd.com/farm4/d/2014/0519/16/9E7EAF8A00C079CB86DD11AA5A8F164A_B1280_1280_540_524.png";
-			}
-			holder.customView.setUUID(imageURL);
-			holder.customView.setImageBitmap(lruCache.getBitmap(imageURL,
-					holder.customView.getBitmapCallback()));
-			return convertView;
-		}
-
-	}
-
 	static class ViewHolder {
 		CustomView customView;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		// getMenuInflater().inflate(R.menu.main, menu);
+		//getMenuInflater().inflate(R.menu.hong_menu_main, menu);
 		return true;
 	}
 
@@ -304,36 +226,37 @@ public class RestaurantDetailActivity extends Activity implements
 					Toast.LENGTH_SHORT).show();
 
 		} else if (e2.getX() - e1.getX() > verticalMinistance
-				&& Math.abs(velocityX) > minVelocity) {	
+				&& Math.abs(velocityX) > minVelocity) {
 			// 在此处实现跳转
-						Intent intent = new Intent(RestaurantDetailActivity.this,
-								Activity_res.class);
-						startActivity(intent);
+			Intent intent = new Intent(RestaurantDetailActivity.this,
+					Activity_res.class);
+			startActivity(intent);
 			Toast.makeText(RestaurantDetailActivity.this, "右滑返回",
 					Toast.LENGTH_SHORT).show();
 
-		} /* else if (e1.getY() - e2.getY() > 20 && Math.abs(velocityY) > 10) {
-			Toast.makeText(RestaurantDetailActivity.this, "turn up",
-					Toast.LENGTH_SHORT).show();
-
-		} else if (e2.getY() - e1.getY() > 20 && Math.abs(velocityY) > 10) {
-			Toast.makeText(RestaurantDetailActivity.this, "turn down",
-					Toast.LENGTH_SHORT).show();
-		} */
+		} /*
+		 * else if (e1.getY() - e2.getY() > 20 && Math.abs(velocityY) > 10) {
+		 * Toast.makeText(RestaurantDetailActivity.this, "turn up",
+		 * Toast.LENGTH_SHORT).show();
+		 * 
+		 * } else if (e2.getY() - e1.getY() > 20 && Math.abs(velocityY) > 10) {
+		 * Toast.makeText(RestaurantDetailActivity.this, "turn down",
+		 * Toast.LENGTH_SHORT).show(); }
+		 */
 
 		return false;
 	}
 
 	// 只要有触发就会调用次方法
 	public boolean onDown(MotionEvent e) {
-//		Toast.makeText(RestaurantDetailActivity.this, "onDown",
-//				Toast.LENGTH_SHORT).show();
+		// Toast.makeText(RestaurantDetailActivity.this, "onDown",
+		// Toast.LENGTH_SHORT).show();
 		return false;
 	}
 
 	public void onLongPress(MotionEvent e) {
-//		Toast.makeText(RestaurantDetailActivity.this, "onLongPress",
-//				Toast.LENGTH_SHORT).show();
+		// Toast.makeText(RestaurantDetailActivity.this, "onLongPress",
+		// Toast.LENGTH_SHORT).show();
 
 	}
 
