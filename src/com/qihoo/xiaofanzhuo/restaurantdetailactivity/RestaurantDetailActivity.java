@@ -99,8 +99,8 @@ public class RestaurantDetailActivity extends Activity implements
 
 	public void activityInit() {
 		hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
-		hListViewAdapter = new HorizontalListViewAdapter(
-				getApplicationContext(), (ArrayList<String>)lruCache.getUrlList());
+//		hListViewAdapter = new HorizontalListViewAdapter(
+//				getApplicationContext(), );
 		hListView.setAdapter(hListViewAdapter);
 		
 		hListView.setOnItemClickListener(new OnItemClickListener() {

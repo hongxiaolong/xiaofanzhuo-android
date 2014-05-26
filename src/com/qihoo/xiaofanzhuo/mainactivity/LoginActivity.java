@@ -18,8 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.carrey.bitmapcachedemo.R;
-import com.qihoo.xiaofanzhuo.restaurantdetailactivity.HorizontalListViewAdapter;
-import com.qihoo.xiaofanzhuo.restaurantdetailactivity.MenuMainActivity;
+import com.qihoo.xiaofanzhuo.restaurantdetailactivity.ForTestMainActivity;
 
 public class LoginActivity extends Activity {
 	
@@ -60,7 +59,7 @@ public class LoginActivity extends Activity {
        		     //设置默认是自动登录状态
        		     auto_login.setChecked(true);
        		    //跳转界面
-				Intent intent = new Intent(LoginActivity.this, HorizontalListViewAdapter.class);
+				Intent intent = new Intent(LoginActivity.this, ForTestMainActivity.class);
 				LoginActivity.this.startActivity(intent);
 				
        	  }
@@ -86,7 +85,7 @@ public class LoginActivity extends Activity {
 					  editor.commit();
 					}
 					//跳转界面
-					Intent intent = new Intent(LoginActivity.this, HorizontalListViewAdapter.class);
+					Intent intent = new Intent(LoginActivity.this, ForTestMainActivity.class);
 					LoginActivity.this.startActivity(intent);
 					//finish();
 					

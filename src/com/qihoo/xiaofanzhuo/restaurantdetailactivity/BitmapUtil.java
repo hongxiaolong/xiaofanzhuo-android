@@ -13,28 +13,28 @@ import android.graphics.drawable.Drawable;
 
 /**
  * @author yanzi
- *����Bitmap��byte[] Drawable����ת��
+ *关于Bitmap与byte[] Drawable互相转换
  */
 public class BitmapUtil {
 	
 	/**
 	 * @param drawable
-	 * drawable ת  Bitmap
+	 * drawable 转  Bitmap
 	 */
 	public static Bitmap drawableToBitmap(Drawable drawable) {
-		// ȡ drawable �ĳ���
+		// 取 drawable 的长宽
 		int w = drawable.getIntrinsicWidth();
 		int h = drawable.getIntrinsicHeight();
 
-		// ȡ drawable ����ɫ��ʽ
+		// 取 drawable 的颜色格式
 		Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
 				: Bitmap.Config.RGB_565;
-		// ������Ӧ bitmap
+		// 建立对应 bitmap
 		Bitmap bitmap = Bitmap.createBitmap(w, h, config);
-		// ������Ӧ bitmap �Ļ���
+		// 建立对应 bitmap 的画布
 		Canvas canvas = new Canvas(bitmap);
 		drawable.setBounds(0, 0, w, h);
-		// �� drawable ���ݻ���������
+		// 把 drawable 内容画到画布中
 		drawable.draw(canvas);
 		return bitmap;
 	}
@@ -42,7 +42,7 @@ public class BitmapUtil {
 	/**
 	 * @param bitmap
 	 * @param roundPx
-	 * ��ȡԲ��ͼƬ
+	 * 获取圆角图片
 	 */
 	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, float roundPx) {
         int w = bitmap.getWidth();
