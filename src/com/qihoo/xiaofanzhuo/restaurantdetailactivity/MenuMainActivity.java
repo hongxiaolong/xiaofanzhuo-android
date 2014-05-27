@@ -5,15 +5,19 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -22,6 +26,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +34,7 @@ import android.widget.TextView;
 import com.carrey.bitmapcachedemo.R;
 import com.example.android.bitmapfun.util.ImageFetcher;
 import com.origamilabs.library.views.StaggeredGridView;
+import com.qihoo.orderdishes.gc.MenuActivity;
 import com.qihoo.xiaofanzhuo.datafromserver.BusinessData;
 import com.qihoo.xiaofanzhuo.datafromserver.BusinessData.MenuData;
 
@@ -38,11 +44,16 @@ import com.qihoo.xiaofanzhuo.datafromserver.BusinessData.MenuData;
  */
 public class MenuMainActivity extends Activity {
 	
+	private static final String TAG = "MenuMainActivity";
+	
 	private ImageFetcher mImageFetcher;
 	private String mExtraDatas;
 	private BusinessData mDatas;
 	private ArrayList<MenuData> mMenuDataList;
 	
+	private ImageButton buttonBack;
+	private ImageButton buttonOrder;
+	private TextView textView;
 	private MenuAdapter mAdapter;
 	
 	private ImageView shopCart;//购物车
@@ -54,15 +65,7 @@ public class MenuMainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.hong_activity_main);
-		
-		SharedPreferences mySharedPreferences =getSharedPreferences("MenuOrder",PreferenceActivity.MODE_WORLD_WRITEABLE);
-		SharedPreferences.Editor editor = mySharedPreferences.edit();
-		editor.putString("Url", "");
-		editor.putString("Name", "");
-		editor.putString("Price", "");
-		editor.putString("amount", "");
-		editor.commit();
+		setContentView(R.layout.hong_menu_main);
 		
 		Bundle extras = getIntent().getExtras();
 		mExtraDatas = extras.getString("data");
@@ -85,9 +88,35 @@ public class MenuMainActivity extends Activity {
 		mAdapter.addItemLast(mMenuDataList);
 		mAdapter.notifyDataSetChanged();
 
+		buttonInit();
 		shopCartInit();
 	}
 
+	private void buttonInit()
+	{
+		textView = (TextView) this.findViewById(R.id.menu_detail_title);
+		Typeface typeFace = Typeface.createFromAsset(getAssets(),
+				"fonts/huakangwawa.ttf");
+		textView.setTypeface(typeFace);
+		textView.setText(mDatas.getShopName());
+		textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+		
+		buttonBack = (ImageButton) findViewById(R.id.menu_button_back);
+		buttonBack.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		
+		buttonOrder = (ImageButton) findViewById(R.id.menu_button_order);
+		buttonOrder.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(MenuMainActivity.this,
+						MenuActivity.class);
+				startActivity(intent);
+			}
+		});
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,6 +172,7 @@ public class MenuMainActivity extends Activity {
 				start_location);
 		int[] end_location = new int[2];// 这是用来存储动画结束位置的X、Y坐标
 		shopCart.getLocationInWindow(end_location);// shopCart是那个购物车
+		Log.i(TAG, "end_location" + " X = " + end_location[0] + "Y = " + end_location[1]);
 
 		// 计算位移
 		int endX = 0 - start_location[0] + 40;// 动画位移的X坐标
@@ -254,15 +284,19 @@ public class MenuMainActivity extends Activity {
 	                String url = mySharedPreferences.getString("Url", "");
 	                String name = mySharedPreferences.getString("Name", "");
 	                String price = mySharedPreferences.getString("Price", "");
-	                String amount = mySharedPreferences.getString("amount", "");
-					editor.putString("Url", url + "_" + infoUrl);
-					editor.putString("Name", name + "_" + infoName);
-					editor.putString("Price", price + "_" + infoPrice);
-					editor.putString("amount", amount + "_" + "1");
+	                
+	                Log.i(TAG, "读出SharedPreferences:" + name + " " + price + " " + url);
+	                
+	                url = url + "_" + infoUrl;
+	                name = name + "_" + infoName;
+	                price = price + "_" + infoPrice;
+	                
+					editor.putString("Url", url);
+					editor.putString("Name", name);
+					editor.putString("Price", price);
 					editor.commit();
-					
-					// 使用toast信息提示框提示成功写入数据
-					Log.i(TAG, "写入SharedPreferences:" + name + " " + price + " " + " " + amount + url);
+
+					Log.i(TAG, "写入SharedPreferences:" + name + " " + price + " " + url);
 				}
 
 			});
@@ -270,7 +304,7 @@ public class MenuMainActivity extends Activity {
 			return convertView;
 		}
 
-		class ViewHolder {
+		private class ViewHolder {
 			ImageView imageView;
 			CheckBox checkBox;
 			TextView contentView;

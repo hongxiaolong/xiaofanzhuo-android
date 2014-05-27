@@ -2,22 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@drawable/hong_selector_item_background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="2dip"
     android:paddingLeft="2dip"
     android:paddingRight="2dip"
-    android:paddingTop="2dip"
-    android:paddingBottom="2dip"
-    android:orientation="vertical" 
-    android:gravity="center"
-    android:clickable="true"
-    android:background="@drawable/hong_selector_item_background">
-  <ImageView 
-      android:id="@+id/img_list_item"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
-  <TextView 
-      android:id="@+id/text_list_item"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center"/>  
+    android:paddingTop="2dip" >
+
+    <ImageView
+        android:id="@+id/img_list_item"
+        android:layout_width="wrap_content"
+        android:duplicateParentState="true"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/text_list_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:duplicateParentState="false"  
+        android:gravity="center" />
 
 </LinearLayout>

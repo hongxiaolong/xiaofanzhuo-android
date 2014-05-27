@@ -1,40 +1,67 @@
 package com.qihoo.xiaofanzhuo.mainactivity;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
+import com.carrey.bitmapcacheapi.ImageHelper;
+import com.carrey.bitmapcacheapi.ImageLruCacheApi;
+import com.carrey.bitmapcachedemo.R;
+import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
+
+import android.support.v4.app.Fragment;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
-import com.carrey.bitmapcacheapi.ImageHelper;
-import com.carrey.bitmapcacheapi.ImageLruCacheApi;
-import com.carrey.bitmapcachedemo.R;
-import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.SimpleAdapter.ViewBinder;
+import android.widget.Toast;
+import android.os.Build;
 
 public class Activity_res extends Activity implements OnScrollListener 
 {
@@ -177,25 +204,224 @@ public class Activity_res extends Activity implements OnScrollListener
         
         
         popMenu_type = new PopMenu(this);
-		popMenu_type.addItems(new String[] { "面食", "盖饭", "小吃", "快餐", "炒菜","全部"});
+		popMenu_type.addItems(new String[] { "烧烤", "贵州菜", "西餐", "鲁菜", "清真菜","全部"});
 		// 菜单项点击监听器
 		popMenu_type.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				System.out.println("下拉菜单点击" + position);
+				
+				if(position==0)
+				{
+					//button3.setBackgroundResource(R.drawable.idle1_s);
+					//button3.setImageResource(R.drawable.is_idle);
+					data.clear();
+					data.addAll(databak);
+					Iterator it=data.iterator();
+					while(it.hasNext())
+					{
+						LinkedList<Object> temp=(LinkedList<Object>) it.next();
+						if(!((String)temp.get(2)).equals("烧烤"))
+						{
+							it.remove();
+						}
+					}
+					
+					Message msg = new Message();
+					msg.what = 2;
+					handler.sendMessage(msg);
+					
+				}
+				else
+					if(position==1)
+					{
+						//button3.setBackgroundResource(R.drawable.idle1_s);
+						//button3.setImageResource(R.drawable.is_idle);
+						data.clear();
+						data.addAll(databak);
+						Iterator it=data.iterator();
+						while(it.hasNext())
+						{
+							LinkedList<Object> temp=(LinkedList<Object>) it.next();
+							if(!((String)temp.get(2)).equals("贵州菜"))
+							{
+								it.remove();
+							}
+						}
+						
+						Message msg = new Message();
+						msg.what = 2;
+						handler.sendMessage(msg);
+						
+					}
+					else
+						if(position==2)
+						{
+							//button3.setBackgroundResource(R.drawable.idle1_s);
+							//button3.setImageResource(R.drawable.is_idle);
+							data.clear();
+							data.addAll(databak);
+							Iterator it=data.iterator();
+							while(it.hasNext())
+							{
+								LinkedList<Object> temp=(LinkedList<Object>) it.next();
+								if(!((String)temp.get(2)).equals("西餐"))
+								{
+									it.remove();
+								}
+							}
+							
+							Message msg = new Message();
+							msg.what = 2;
+							handler.sendMessage(msg);
+							
+						}
+						else
+							if(position==3)
+							{
+								//button3.setBackgroundResource(R.drawable.idle1_s);
+								//button3.setImageResource(R.drawable.is_idle);
+								data.clear();
+								data.addAll(databak);
+								Iterator it=data.iterator();
+								while(it.hasNext())
+								{
+									LinkedList<Object> temp=(LinkedList<Object>) it.next();
+									if(!((String)temp.get(2)).equals("鲁菜"))
+									{
+										it.remove();
+									}
+								}
+								
+								Message msg = new Message();
+								msg.what = 2;
+								handler.sendMessage(msg);
+								
+							}
+							else
+								if(position==4)
+								{
+									//button3.setBackgroundResource(R.drawable.idle1_s);
+									//button3.setImageResource(R.drawable.is_idle);
+									data.clear();
+									data.addAll(databak);
+									Iterator it=data.iterator();
+									while(it.hasNext())
+									{
+										LinkedList<Object> temp=(LinkedList<Object>) it.next();
+										if(!((String)temp.get(2)).equals("清真菜"))
+										{
+											it.remove();
+										}
+									}
+									
+									Message msg = new Message();
+									msg.what = 2;
+									handler.sendMessage(msg);
+									
+								}
+								else
+								if(position==5)
+								{
+									data.clear();
+									data.addAll(databak);
+									Message msg = new Message();
+									msg.what = 2;
+									handler.sendMessage(msg);
+								}
+				
+				
 				popMenu_type.dismiss();
 			}
 		});
 		
 		popMenu_dis = new PopMenu(this);
-		popMenu_dis.addItems(new String[] { "10-20", "20-40", "40以上", "全部" });
+		popMenu_dis.addItems(new String[] { "<50", "50-100", ">100", "全部" });
 		// 菜单项点击监听器
 		popMenu_dis.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				System.out.println("下拉菜单点击" + position);
+				
+				if(position==0)
+				{
+					//button3.setBackgroundResource(R.drawable.idle1_s);
+					//button3.setImageResource(R.drawable.is_idle);
+					data.clear();
+					data.addAll(databak);
+					Iterator it=data.iterator();
+					while(it.hasNext())
+					{
+						LinkedList<Object> temp=(LinkedList<Object>) it.next();
+						if(Integer.parseInt((String) temp.get(8))>=50)
+						{
+							it.remove();
+						}
+					}
+					
+					Message msg = new Message();
+					msg.what = 2;
+					handler.sendMessage(msg);
+					
+				}
+				
+				else
+
+					if(position==1)
+					{
+						//button3.setBackgroundResource(R.drawable.idle1_s);
+						//button3.setImageResource(R.drawable.is_idle);
+						data.clear();
+						data.addAll(databak);
+						Iterator it=data.iterator();
+						while(it.hasNext())
+						{
+							LinkedList<Object> temp=(LinkedList<Object>) it.next();
+							if(Integer.parseInt((String) temp.get(8))<50||Integer.parseInt((String) temp.get(8))>100)
+							{
+								it.remove();
+							}
+						}
+						
+						Message msg = new Message();
+						msg.what = 2;
+						handler.sendMessage(msg);
+						
+					}
+					else
+						if(position==2)
+						{
+							//button3.setBackgroundResource(R.drawable.idle1_s);
+							//button3.setImageResource(R.drawable.is_idle);
+							data.clear();
+							data.addAll(databak);
+							Iterator it=data.iterator();
+							while(it.hasNext())
+							{
+								LinkedList<Object> temp=(LinkedList<Object>) it.next();
+								if(Integer.parseInt((String) temp.get(8))<100)
+								{
+									it.remove();
+								}
+							}
+							
+							Message msg = new Message();
+							msg.what = 2;
+							handler.sendMessage(msg);
+							
+						}
+						else
+							if(position==3)
+							{
+							
+								data.clear();
+								data.addAll(databak);
+								Message msg = new Message();
+								msg.what = 2;
+								handler.sendMessage(msg);
+							}
+							System.out.println("下拉菜单点击" + position);
 				popMenu_dis.dismiss();
 			}
 		});
@@ -405,6 +631,28 @@ public class Activity_res extends Activity implements OnScrollListener
     						list.removeFooterView(loadingView);
     					//adapter.notifyDataSetChanged();
     				}
+    				else
+    					if(msg.what==4)
+    					{
+    						dialog.cancel();
+    						AlertDialog.Builder builder = new Builder(Activity_res.this);
+    						builder.setMessage("网络无法连接");
+    						builder.setTitle("提示");
+    						builder.setPositiveButton("确认", new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) 
+								{
+
+		    						dialog.dismiss();
+		    						Activity_res.this.finish();	
+								}
+    						
+    						}
+    						);
+
+    					}
     			}
         };
         
@@ -414,18 +662,37 @@ public class Activity_res extends Activity implements OnScrollListener
     
     @Override
 	protected void onDestroy() {
+    	try
+    	{
 		lruCache.poolManager.stop();
+    	}
+    	catch(Exception e)
+    	{
+    		
+    	}
+    	finally
+    	{
 		super.onDestroy();
+    	}
 	}
     
     class MyAsyncTask extends AsyncTask<String, Integer, String> {
 		@Override
 			protected String doInBackground(String... params) 
 		{
-				getShowdata();
+				boolean ok=getShowdata();
+				//if(ok)
+				//{
 	        	Message msg = new Message();
 				msg.what = 1;
 				handler.sendMessage(msg);
+				//}
+				//else
+				//{
+//					Message msg = new Message();
+//					msg.what = 4;
+//					handler.sendMessage(msg);
+				//}
 				return null;
 			}
 
@@ -439,7 +706,7 @@ public class Activity_res extends Activity implements OnScrollListener
 			}	
 		}
     
-    public void getShowdata()
+    public boolean getShowdata()
     {
     	data.clear();
     	data.addAll(databak);
@@ -497,16 +764,25 @@ public class Activity_res extends Activity implements OnScrollListener
 		    	temp.add(isfree);     
 		    	temp.add(iswai);
 		    	temp.add(phone);
+		    	if(tokens[10].startsWith("'"))
+		    		temp.add(tokens[10].subSequence(1, tokens[10].length()-1));
+		    	else		    		
 		    	temp.add(tokens[10]); //价格
 		    	data.add(temp);
 						
 			}
 			in.close();	//关闭字符输入流对象
 			urlConn.disconnect();	//断开连接
-		} catch (MalformedURLException e) {
+			
+		} catch (MalformedURLException e) 
+		{
+			Log.d("sdfsafsdafsdafsadfsda","sdfsdfsdfsdafsdfsafsdaf");
 			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
+			Log.d("sdfsafsdafsdafsadfsda","sdfsdfsdfsdafsdfsafsdaf");
 			e.printStackTrace();
+			return false;
 		}
 		
 		
@@ -514,6 +790,7 @@ public class Activity_res extends Activity implements OnScrollListener
     	databak.addAll(data);
     	
     	currentcount=data.size();
+    	return true;
 		
     }
     
@@ -592,6 +869,9 @@ public class Activity_res extends Activity implements OnScrollListener
 		    	temp.add(isfree);
 		    	temp.add(iswai);
 		    	temp.add(phone);
+		    	if(tokens[10].startsWith("'"))
+		    		temp.add(tokens[10].subSequence(1, tokens[10].length()-1));
+		    	else		    		
 		    	temp.add(tokens[10]);
 		    	data.add(temp);
 						

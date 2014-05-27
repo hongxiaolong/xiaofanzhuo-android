@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/detail_linerlayout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail_relativelayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ffffff"
-    android:orientation="vertical" >
+    android:background="#ffffff" >
 
     <RelativeLayout
         android:id="@+id/navigation_bar"
@@ -36,12 +35,23 @@
             android:text="大公鸡"
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="#333333" />
+
+        <ImageButton
+            android:id="@+id/button_order"
+            android:layout_width="35dp"
+            android:layout_height="42dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/hong_menu_order" >
+        </ImageButton>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/zone_relative_layout"
         android:layout_width="fill_parent"
         android:layout_height="120dp"
+        android:layout_below="@id/navigation_bar"
         android:layout_marginLeft="2dp" >
 
         <LinearLayout
@@ -101,8 +111,8 @@
         android:id="@+id/btn_support"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_alignParentLeft="@id/detail_text"
-        android:layout_below="@id/detail_text"
+        android:layout_alignParentLeft="@id/zone_relative_layout"
+        android:layout_below="@id/zone_relative_layout"
         android:layout_gravity="center|bottom"
         android:layout_marginTop="2dp"
         android:gravity="center"
@@ -135,6 +145,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -147,12 +158,33 @@
             android:layout_height="180dip"
             android:layout_alignParentTop="true" >
         </com.qihoo.xiaofanzhuo.restaurantdetailactivity.HorizontalListView>
+
         <com.qihoo.xiaofanzhuo.restaurantdetailactivity.HorizontalListView
             android:id="@+id/horizon_listview_spec"
             android:layout_width="fill_parent"
             android:layout_height="180dip"
-            android:layout_alignParentTop="true" >
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="10dp" >
         </com.qihoo.xiaofanzhuo.restaurantdetailactivity.HorizontalListView>
     </LinearLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/res_shopping_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="22dp" >
+
+        <ImageView
+            android:id="@+id/res_shopping_img_cart"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:padding="1dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/hong_shopping_cart" />
+    </RelativeLayout>
+
+</RelativeLayout>

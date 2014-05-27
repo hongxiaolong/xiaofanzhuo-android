@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.util.Log;
@@ -67,7 +68,7 @@ public class HorizontalListViewAdapter extends BaseAdapter{
 		ViewHolder holder;
 		if(convertView==null){
 			holder = new ViewHolder();
-			convertView = mInflater.inflate(R.layout.horizontal_list_item, null);
+			convertView = mInflater.inflate(R.layout.hong_horizontal_list_item, null);
 			holder.mImage=(ImageView)convertView.findViewById(R.id.img_list_item);
 			holder.mImage.setLayoutParams(new LinearLayout.LayoutParams(
 					(int) mContext.getResources().getDimensionPixelOffset(R.dimen.thumnail_default_width), 
@@ -91,7 +92,7 @@ public class HorizontalListViewAdapter extends BaseAdapter{
 //		iconBitmap = getPropThumnail(imageURL);
 //		holder.mImage.setImageBitmap(iconBitmap);
 //		holder.mImage.setImageBitmap(iconBitmap);
-
+		
 		return convertView;
 	}
 

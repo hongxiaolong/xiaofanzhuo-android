@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.hong_activity_main);
+		setContentView(R.layout.hong_menu_main);
 		mImageFetcher = new ImageFetcher(this, 240);
 		mImageFetcher.setLoadingImage(R.drawable.empty_photo);
 		StaggeredGridView gridView = (StaggeredGridView) this.findViewById(R.id.staggeredGridView1);
