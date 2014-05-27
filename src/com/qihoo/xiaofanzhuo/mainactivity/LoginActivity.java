@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.carrey.bitmapcachedemo.R;
 import com.qihoo.xiaofanzhuo.restaurantdetailactivity.ForTestMainActivity;
+import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
 
 public class LoginActivity extends Activity {
 	
@@ -59,7 +60,7 @@ public class LoginActivity extends Activity {
        		     //设置默认是自动登录状态
        		     auto_login.setChecked(true);
        		    //跳转界面
-				Intent intent = new Intent(LoginActivity.this, ForTestMainActivity.class);
+				Intent intent = new Intent(LoginActivity.this, RestaurantDetailActivity.class);
 				LoginActivity.this.startActivity(intent);
 				
        	  }
@@ -85,7 +86,7 @@ public class LoginActivity extends Activity {
 					  editor.commit();
 					}
 					//跳转界面
-					Intent intent = new Intent(LoginActivity.this, ForTestMainActivity.class);
+					Intent intent = new Intent(LoginActivity.this, RestaurantDetailActivity.class);
 					LoginActivity.this.startActivity(intent);
 					//finish();
 					

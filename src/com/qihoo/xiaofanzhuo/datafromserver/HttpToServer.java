@@ -13,6 +13,13 @@ import java.util.List;
 import android.content.Context;
 import android.os.AsyncTask;
 
+/**
+ * HttpToServer
+ * 
+ * @author hongxiaolong
+ * 
+ */
+
 public class HttpToServer {
 
 	public static String webServer = "http://182.92.80.201/2.php?content=";

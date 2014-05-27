@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import com.carrey.bitmapcachedemo.R;
 import com.example.android.bitmapfun.util.ImageFetcher;
 import com.qihoo.xiaofanzhuo.datafromserver.HttpToServer;
-import com.qihoo.xiaofanzhuo.mainactivity.ForTestUrlString;
 
 public class ForTestMainActivity extends Activity {
 
@@ -48,8 +47,8 @@ public class ForTestMainActivity extends Activity {
 //			for (int i = 0; i < ForTestUrlString.imageUrlString.length; ++i)
 //				imageUrlList.add(ForTestUrlString.imageUrlString[i]);
 
-				hListViewAdapter.addItemLast(imageUrlList);
-				hListViewAdapter.notifyDataSetChanged();
+//				hListViewAdapter.addItemLast(imageUrlList);
+//				hListViewAdapter.notifyDataSetChanged();
 				
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

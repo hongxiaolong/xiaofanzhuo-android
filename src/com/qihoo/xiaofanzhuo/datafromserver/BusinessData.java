@@ -49,7 +49,7 @@ public class BusinessData {
 	 * 构造函数
 	 * @pram:服务端传入的字符串，，以"____"分隔
 	 */
-	BusinessData(String originString)
+	public BusinessData(String originString)
 	{
 		String[] listArray = splitFromStringBySymbol(originString, "\t");
 		for (int i = 0; i < listArray.length; ++i)
@@ -69,11 +69,11 @@ public class BusinessData {
 	}
 	public String getShopName()
 	{
-		return this.ShopName = bussinessMap.get("ShopName");
+		return this.ShopName = getActualString(bussinessMap.get("ShopName"));
 	}
 	public String getBusyState()
 	{
-		return this.BusyState = bussinessMap.get("BusyState");
+		return this.BusyState = getActualString(bussinessMap.get("BusyState"));
 	}
 	public String getShopImgUrl()
 	{
@@ -81,15 +81,15 @@ public class BusinessData {
 	}
 	public String getShopInfo()
 	{
-		return this.ShopInfo = bussinessMap.get("ShopInfo");
+		return this.ShopInfo = getActualString(bussinessMap.get("ShopInfo"));
 	}
 	public String getShopSite()
 	{
-		return this.ShopSite = bussinessMap.get("ShopSite");
+		return this.ShopSite = getActualString(bussinessMap.get("ShopSite"));
 	}
 	public String getPhoneNum()
 	{
-		return this.PhoneNum = bussinessMap.get("PhoneNum");
+		return this.PhoneNum = getActualString(bussinessMap.get("PhoneNum"));
 	}
 	public String getSendFoodOut()
 	{
@@ -101,7 +101,7 @@ public class BusinessData {
 	}
 	public String getPraiseNum()
 	{
-		return this.PraiseNum = bussinessMap.get("PraiseNum");
+		return this.PraiseNum = getActualString(bussinessMap.get("PraiseNum"));
 	}
 	public String getTasteScore()
 	{
@@ -109,7 +109,7 @@ public class BusinessData {
 	}
 	public String getShopAverPrice()
 	{
-		return this.ShopAverPrice = bussinessMap.get("ShopAverPrice");
+		return this.ShopAverPrice = getActualString(bussinessMap.get("ShopAverPrice"));
 	}
 	public String getServiceScore()
 	{
@@ -121,7 +121,7 @@ public class BusinessData {
 	}
 	public String getShopTag()
 	{
-		return this.ShopTag = bussinessMap.get("ShopTag");
+		return this.ShopTag = getActualString(bussinessMap.get("ShopTag"));
 	}
 	public String getOther1()
 	{
@@ -149,13 +149,13 @@ public class BusinessData {
 	{
 		//String str;
 		if(str.indexOf("\'") == 0) 
-			str = str.substring(1, str.length());   //去掉第一个 "
+			str = str.substring(1, str.length());   //去掉第一个'
 		if(str.lastIndexOf("\'") == (str.length()-1)) 
-			str = str.substring(0, str.length()-1);  //去掉最后一个 " 
+			str = str.substring(0, str.length()-1);  //去掉最后一个'
 		return str;
 	}
 	
-	private static class MenuData{
+	public static class MenuData{
 		
 		private HashMap<String, String> MenuMap;
 		
@@ -172,9 +172,6 @@ public class BusinessData {
 		}
 		public String getFoodPrice(){
 			return MenuMap.get("FoodPrice");
-		}
-		public String getDishProperty(){
-			return MenuMap.get("Food");
 		}
 		public String getFoodImgUrl(){
 			return getActualString(MenuMap.get("FoodImgUrl"));

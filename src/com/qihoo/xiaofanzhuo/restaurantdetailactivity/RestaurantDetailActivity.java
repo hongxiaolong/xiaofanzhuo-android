@@ -1,12 +1,14 @@
 package com.qihoo.xiaofanzhuo.restaurantdetailactivity;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,13 +24,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.carrey.bitmapcacheapi.ImageLruCacheApi;
 import com.carrey.bitmapcachedemo.R;
 import com.carrey.customview.customview.CustomView;
+import com.example.android.bitmapfun.util.ImageFetcher;
 import com.qihoo.orderdishes.gc.OrderDishesMainActivity;
+import com.qihoo.xiaofanzhuo.datafromserver.BusinessData;
+import com.qihoo.xiaofanzhuo.datafromserver.BusinessData.MenuData;
+import com.qihoo.xiaofanzhuo.datafromserver.HttpToServer;
 import com.qihoo.xiaofanzhuo.mainactivity.Activity_res;
-import com.qihoo.xiaofanzhuo.mainactivity.ForTestUrlString;
 import com.qihoo.xiaofanzhuo.mainactivity.MyGlobalClass;
+import com.qihoo.xiaofanzhuo.mainactivity.WindowsConstant;
 
 /**
  * RestaurantDetailActivity
@@ -38,13 +43,19 @@ import com.qihoo.xiaofanzhuo.mainactivity.MyGlobalClass;
  */
 public class RestaurantDetailActivity extends Activity implements
 		OnTouchListener, android.view.GestureDetector.OnGestureListener {
+	
+	private static final String TAG = "RestaurantDetailActivity";
 
+	private ImageFetcher mImageFetcher;
+	private BusinessData mDatas;
+	private ArrayList<MenuData> mMenuDataList;
+	
 	private GestureDetector mGestureDetector;
 	private int verticalMinistance = 20; // 水平最小识别距离
 	private int minVelocity = 10; // 最小识别速度
 
 	private LayoutInflater inflater;
-	private ImageLruCacheApi lruCache = null;
+
 	private TextView textView;
 	private TextView textView01;
 	private TextView textView02;
@@ -61,12 +72,17 @@ public class RestaurantDetailActivity extends Activity implements
 	private MyGlobalClass appGlobal;
 
 	private HorizontalListView hListView;
+	private HorizontalListView hListView_Spec;
 	private HorizontalListViewAdapter hListViewAdapter;
+	private HorizontalListViewAdapter hListViewAdapter_Spec;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.hong_detail_layout);
+
+		mImageFetcher = new ImageFetcher(this, 240);
+		mImageFetcher.setLoadingImage(R.drawable.empty_photo);
 
 		// 手势监听
 		mGestureDetector = new GestureDetector(RestaurantDetailActivity.this);// (OnGestureListener)
@@ -75,41 +91,72 @@ public class RestaurantDetailActivity extends Activity implements
 		// 触屏监听
 		mActivity.setOnTouchListener(this);
 		mActivity.setLongClickable(true);
-
-		Bundle extras = getIntent().getExtras();
-		textString[0] = extras.getString("name");
-		textString[1] = extras.getString("price");
-		textString[2] = extras.getString("type");
-		textString[3] = extras.getString("location");
-		textString[4] = extras.getString("phone");
-
+		
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        WindowsConstant.displayWidth = displayMetrics.widthPixels;
+        WindowsConstant.displayHeight = displayMetrics.heightPixels;
+		
 		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		appGlobal = (MyGlobalClass) getApplication(); // 获取应用程序
 
-		lruCache = new ImageLruCacheApi("10.65.7.234");
-		lruCache.LruCacheInit();
-		for (int i = 0; i < ForTestUrlString.imageUrlString.length; ++i)
-			lruCache.getUrlList().add(ForTestUrlString.imageUrlString[i]);
+		Bundle extras = getIntent().getExtras();
+		String extraStr = extras.getString("data");
+		mDatas = new BusinessData(extraStr);	
+		
+		textString[0] = mDatas.getShopName();
+		textString[1] = mDatas.getShopAverPrice();
+		textString[2] = mDatas.getShopTag();
+		textString[3] = mDatas.getShopSite();
+		textString[4] = mDatas.getPhoneNum();
+		
+		mMenuDataList = new ArrayList<MenuData>();
+		for (int i = 0; i < mDatas.getFoodList().size(); ++i)
+			mMenuDataList.add(mDatas.getFoodList().get(i));
 
 		textViewInit();
 		buttonInit();
-		activityInit();
-
+		horizontalListViewAdapterInit();
+		
+		hListViewAdapter.addItemLast(mMenuDataList);
+		hListViewAdapter.notifyDataSetChanged();
+		
+		hListViewAdapter_Spec.addItemLast(mMenuDataList);
+		hListViewAdapter_Spec.notifyDataSetChanged();
 	}
 
-	public void activityInit() {
-		hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
-//		hListViewAdapter = new HorizontalListViewAdapter(
-//				getApplicationContext(), );
+	public void horizontalListViewAdapterInit() {
+
+		hListView = (HorizontalListView) findViewById(R.id.horizon_listview_recommend);
+		hListViewAdapter = new HorizontalListViewAdapter(
+				getApplicationContext(), mImageFetcher);
 		hListView.setAdapter(hListViewAdapter);
-		
+
 		hListView.setOnItemClickListener(new OnItemClickListener() {
+
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				hListViewAdapter.setSelectIndex(position);
 				hListViewAdapter.notifyDataSetChanged();
 			}
+
+		});
+		
+		hListView_Spec = (HorizontalListView) findViewById(R.id.horizon_listview_spec);
+		hListViewAdapter_Spec = new HorizontalListViewAdapter(
+				getApplicationContext(), mImageFetcher);
+		hListView_Spec.setAdapter(hListViewAdapter_Spec);
+
+		hListView_Spec.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				hListViewAdapter_Spec.setSelectIndex(position);
+				hListViewAdapter_Spec.notifyDataSetChanged();
+			}
+
 		});
 	}
 
@@ -191,7 +238,6 @@ public class RestaurantDetailActivity extends Activity implements
 
 	@Override
 	protected void onDestroy() {
-		lruCache.poolManager.stop();
 		super.onDestroy();
 	}
 
@@ -202,7 +248,7 @@ public class RestaurantDetailActivity extends Activity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.hong_menu_main, menu);
+		// getMenuInflater().inflate(R.menu.hong_menu_main, menu);
 		return true;
 	}
 

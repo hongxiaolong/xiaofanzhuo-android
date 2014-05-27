@@ -1,63 +1,42 @@
 package com.qihoo.xiaofanzhuo.mainactivity;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
-import com.carrey.bitmapcacheapi.ImageHelper;
-import com.carrey.bitmapcacheapi.ImageLruCacheApi;
-import com.carrey.bitmapcachedemo.R;
-import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
-
-import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.SimpleAdapter.ViewBinder;
-import android.widget.Toast;
-import android.os.Build;
 
-public class Activity_res extends Activity 
+import com.carrey.bitmapcacheapi.ImageHelper;
+import com.carrey.bitmapcacheapi.ImageLruCacheApi;
+import com.carrey.bitmapcachedemo.R;
+import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
+
+public class Activity_res extends Activity implements OnScrollListener 
 {
 
 	ProgressDialog dialog;
@@ -74,9 +53,10 @@ public class Activity_res extends Activity
 	Boolean istouch=false;
 	int currentcount;
 	int last_item_position,firstVisibleItem , visibleItemCount,totalItemCount;  
-	  
+	int page=1;
 	
 	
+	LinkedList<String> dataforres=new LinkedList<String>();
 	LinkedList<LinkedList<Object>> data=new LinkedList<LinkedList<Object>>();
 	LinkedList<LinkedList<Object>> databak=new LinkedList<LinkedList<Object>>();
 	View loadingView,headview;
@@ -173,7 +153,7 @@ public class Activity_res extends Activity
         list.addFooterView(loadingView);
        // list.addHeaderView(headview);
        // list.setSelection(1);
-       //list.setOnScrollListener(this);
+       list.setOnScrollListener(this);
         
        
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -183,11 +163,7 @@ public class Activity_res extends Activity
         	{				
 				Intent intent = new Intent(Activity_res.this, RestaurantDetailActivity.class); 
 				
-				intent.putExtra("name", "那家小馆");
-				intent.putExtra("price", "人均价格:80");
-				intent.putExtra("type", "鲁菜，聚会");
-				intent.putExtra("location", "酒仙桥路6号院");
-				intent.putExtra("phone", "10086");
+				intent.putExtra("data",dataforres.get(position));
 				startActivity(intent);
         	// TODO Auto-generated method stub
         	}
@@ -409,7 +385,7 @@ public class Activity_res extends Activity
     				dialog.cancel();
     				if(list.getFooterViewsCount()==0)
     					list.addFooterView(loadingView);
-    			    new MyAsyncTask_add().execute(" ");
+    				//new MyAsyncTask_add().execute(" ");
     			}
     			else
     				if(msg.what==2)
@@ -422,15 +398,17 @@ public class Activity_res extends Activity
 //    					list.setVisibility(View.GONE);
 //    					adapter.notifyDataSetChanged();
 //    					list.setVisibility(View.VISIBLE);
-//    					isloading=false;
+    					adapter=new MyAdapter();
+    					list.setAdapter(adapter);
+    					isloading=false;
     					if(list.getFooterViewsCount()==1)
     						list.removeFooterView(loadingView);
-    					adapter.notifyDataSetChanged();
+    					//adapter.notifyDataSetChanged();
     				}
     			}
         };
         
-        //adapter.notifyDataSetChanged();
+        
     }
     
     
@@ -444,7 +422,7 @@ public class Activity_res extends Activity
 		@Override
 			protected String doInBackground(String... params) 
 		{
-				getdata();
+				getShowdata();
 	        	Message msg = new Message();
 				msg.what = 1;
 				handler.sendMessage(msg);
@@ -461,179 +439,185 @@ public class Activity_res extends Activity
 			}	
 		}
     
-    
-    public void getdata()
+    public void getShowdata()
     {
     	data.clear();
     	data.addAll(databak);
-    	String url;
-    	
-    	LinkedList<Object> temp=new LinkedList<Object>();
-    	//temp.add(getBitmap("http://i1.s1.dpfile.com/pc/ge/35e8464f28043414ba51b6ced682697b(600x1000)/thumb.jpg"));
-    	temp.add(null);
-    	url="http://i1.s1.dpfile.com/pc/ge/35e8464f28043414ba51b6ced682697b(600x1000)/thumb.jpg";
-    	lruCache.getUrlList().add(url);
-    	lruCache.getBitmap(url, lruCache.viewCallback);
-    	temp.add("那家小馆");
-    	temp.add("鲁菜");
-    	temp.add("15");
-    	temp.add("10");
-    	temp.add(true);
-    	temp.add(false);
-    	data.add(temp);
-    	
-    	temp=new LinkedList<Object>();
-    	url="http://i2.s1.dpfile.com/pc/ge/c231bf55103916d2ca4ddfe5ffa5ff98(600x1000)/thumb.jpg";
-    	//temp.add(getBitmap("http://i2.s1.dpfile.com/pc/ge/c231bf55103916d2ca4ddfe5ffa5ff98(600x1000)/thumb.jpg"));
-    	temp.add(null);
-    	lruCache.getUrlList().add(url);
-    	lruCache.getBitmap(url, lruCache.viewCallback);
-    	
-    	
-    	temp.add("盛福楼");
-    	temp.add("自助餐");
-    	temp.add("12");
-    	temp.add("48");
-    	temp.add(false);
-    	temp.add(true);
-    	data.add(temp);
-    	
-    	temp=new LinkedList<Object>();
-    	//temp.add(getBitmap("http://i3.s1.dpfile.com/pc/ge/99941393464ff2d9f1cf16497daa1066(600x1000)/thumb.jpg"));
-    	temp.add(null);
-    	url="http://i3.s1.dpfile.com/pc/ge/99941393464ff2d9f1cf16497daa1066(600x1000)/thumb.jpg";
-    	lruCache.getUrlList().add(url);
-    	lruCache.getBitmap(url, lruCache.viewCallback);
-    	
-    	
-    	temp.add("嘉祥一品");
-    	temp.add("贵州菜");
-    	temp.add("98");
-    	temp.add("67");
-    	temp.add(true);
-    	temp.add(false);
-    	data.add(temp);
-    	 
-    	temp=new LinkedList<Object>();
-    	//temp.add(getBitmap("http://i3.s1.dpfile.com/pc/ge/350a4ba1f7368e3a12809549d35fa467(600x1000)/thumb.jpg"));
-    	temp.add(null);
-    	url="http://i3.s1.dpfile.com/pc/ge/350a4ba1f7368e3a12809549d35fa467(600x1000)/thumb.jpg";
-    	lruCache.getUrlList().add(url);
-    	lruCache.getBitmap(url, lruCache.viewCallback);
-    	
-    	temp.add("国宾大厦");
-    	temp.add("日本菜");
-    	temp.add("86");
-    	temp.add("73");
-    	temp.add(false);
-    	temp.add(false);
-    	data.add(temp);
-    	
-    	
-    	temp=new LinkedList<Object>();
-    	//temp.add(getBitmap("http://i1.s1.dpfile.com/pc/ge/3adc49bd8447de556916962420749719(600x1000)/thumb.jpg"));
-    	temp.add(null);
-    	url="http://i1.s1.dpfile.com/pc/ge/3adc49bd8447de556916962420749719(600x1000)/thumb.jpg";
-    	lruCache.getUrlList().add(url);
-    	lruCache.getBitmap(url, lruCache.viewCallback);
-    	
-    	temp.add("砂锅居");
-    	temp.add("海鲜");
-    	temp.add("16");
-    	temp.add("44");
-    	temp.add(true);
-    	temp.add(false);
-    	data.add(temp);
-     
-    	temp=new LinkedList<Object>();
-    	//temp.add(getBitmap("http://i3.s1.dpfile.com/pc/ge/f5bbfcb0f63bf58d9e5c765bc7b8521e(600x1000)/thumb.jpg"));
-    	temp.add(null);
-    	url="http://i3.s1.dpfile.com/pc/ge/f5bbfcb0f63bf58d9e5c765bc7b8521e(600x1000)/thumb.jpg";
-    	lruCache.getUrlList().add(url);
-    	lruCache.getBitmap(url, lruCache.viewCallback);
-    
-    	temp.add("江边城外");
-    	temp.add("海鲜");
-    	temp.add("95");
-    	temp.add("31");
-    	temp.add(true);
-    	temp.add(false);
-    	data.add(temp);
-	
-    	temp=new LinkedList<Object>();
-    	//temp.add(getBitmap("http://i1.s1.dpfile.com/pc/ge/53e7bfdbb6cd0dba17e6d8d3d749e205(600x1000)/thumb.jpg"));
-    	temp.add(null);
-    	url="http://i1.s1.dpfile.com/pc/ge/53e7bfdbb6cd0dba17e6d8d3d749e205(600x1000)/thumb.jpg";
-    	lruCache.getUrlList().add(url);
-    	lruCache.getBitmap(url, lruCache.viewCallback);
-    	
-    	
-    	temp.add("重庆堂子");
-    	temp.add("烧烤");
-    	temp.add("30");
-    	temp.add("31");
-    	temp.add(true);
-    	temp.add(true);
-    	data.add(temp);
+ 
+    	String target="";
+		target = "http://182.92.80.201/2.php?content="+URLEncoder.encode("GetShopInfoByShopIDs____1_10");	//要访问的URL地址
+		//target = "http://182.92.80.201/2.php?content="
+			//	+base64(content.getText().toString().trim());	//要访问的URL地址
+		URL url;
+		try {
+			url = new URL(target);
+			HttpURLConnection urlConn = (HttpURLConnection) url
+					.openConnection();	//创建一个HTTP连接
+			InputStreamReader in = new InputStreamReader(
+					urlConn.getInputStream()); // 获得读取的内容
+			BufferedReader buffer = new BufferedReader(in); // 获取输入流对象
+			String inputLine = null;
+			//通过循环逐行读取输入流中的内容
+			while ((inputLine = buffer.readLine()) != null) 
+			{
+				dataforres.add(inputLine);
+				String[] tokens=inputLine.split("	");
+				LinkedList<Object> temp=new LinkedList<Object>();
+		    	//temp.add(getBitmap("http://i1.s1.dpfile.com/pc/ge/35e8464f28043414ba51b6ced682697b(600x1000)/thumb.jpg"));
+		    	
+				boolean isfree=false;
+				if(tokens[2].equals("空闲"))
+					isfree=true;
+				System.out.println("是否空闲："+isfree);
+				System.out.println("图片地址："+tokens[3].substring(1, tokens[3].length()-1));
+				String phone=tokens[6];
+				if(phone.length()==0)
+					phone="没有";
+				else
+				if(phone.contains("没有"))
+				System.out.println("电话空");
+				else
+					System.out.println("电话："+phone.substring(2,phone.length()-1));
+				boolean iswai=false;
+				if(!(tokens[7].contains("不")))
+					iswai=true;
+					System.out.println("是否外卖："+iswai);
+					System.out.println("想吃人数："+tokens[8]);
+					System.out.println("点赞人数"+tokens[9]);
+					System.out.println("人均价格："+tokens[10]);
+					System.out.println("餐厅类型："+tokens[14]);
+				
+				temp.add(null);
+		    	lruCache.getUrlList().add(tokens[3].substring(1, tokens[3].length()-1));
+		    	lruCache.getBitmap(tokens[3].substring(1, tokens[3].length()-1), lruCache.viewCallback);
+		    	temp.add(tokens[1].substring(1, tokens[1].length()-1));
+		    	temp.add(tokens[14]); //类型
+		    	temp.add(tokens[8]);  //想吃 
+		    	temp.add(tokens[9]);  //点赞
+		    	temp.add(isfree);     
+		    	temp.add(iswai);
+		    	temp.add(phone);
+		    	temp.add(tokens[10]); //价格
+		    	data.add(temp);
+						
+			}
+			in.close();	//关闭字符输入流对象
+			urlConn.disconnect();	//断开连接
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-    	temp=new LinkedList<Object>();
-    	//temp.add(getBitmap("http://i2.s1.dpfile.com/pc/ge/5a7979f280af883c0a09bfac0587c9bc(600x1000)/thumb.jpg"));
-    	temp.add(null);
-    	url="http://i2.s1.dpfile.com/pc/ge/5a7979f280af883c0a09bfac0587c9bc(600x1000)/thumb.jpg";
-    	lruCache.getUrlList().add(url);
-    	lruCache.getBitmap(url, lruCache.viewCallback);
-    	
-    	
-    	temp.add("伍加壹烤");
-    	temp.add("粤菜");
-    	temp.add("30");
-    	temp.add("31");
-    	temp.add(true);
-    	temp.add(true);
-    	data.add(temp);
-    	databak.clear();
+		
+		databak.clear();
     	databak.addAll(data);
     	
     	currentcount=data.size();
-//    	try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		
+    }
+    
+    
+    public void getalldata()
+    {
+    	try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	data.clear();
+    	data.addAll(databak);
  
+    	String target="";
+    	if(page>10)
+    		return;
+		target = "http://182.92.80.201/2.php?content="+URLEncoder.encode("GetShopInfoByShopIDs____"+page*10+"_"+(page+1)*10);	//要访问的URL地址
+		page++;
+		//target = "http://182.92.80.201/2.php?content="
+			//	+base64(content.getText().toString().trim());	//要访问的URL地址
+		URL url;
+		try {
+			url = new URL(target);
+			HttpURLConnection urlConn = (HttpURLConnection) url
+					.openConnection();	//创建一个HTTP连接
+			InputStreamReader in = new InputStreamReader(
+					urlConn.getInputStream()); // 获得读取的内容
+			BufferedReader buffer = new BufferedReader(in); // 获取输入流对象
+			String inputLine = null;
+			//通过循环逐行读取输入流中的内容
+			while ((inputLine = buffer.readLine()) != null) 
+			{
+				dataforres.add(inputLine);
+				String[] tokens=inputLine.split("	");
+				LinkedList<Object> temp=new LinkedList<Object>();
+		    	//temp.add(getBitmap("http://i1.s1.dpfile.com/pc/ge/35e8464f28043414ba51b6ced682697b(600x1000)/thumb.jpg"));
+		    	System.out.println(tokens[1].substring(1, tokens[1].length()-1));
+				boolean isfree=false;
+				if(tokens[2].equals("空闲"))
+					isfree=true;
+				System.out.println("是否空闲："+isfree);
+				System.out.println("图片地址："+tokens[3].substring(1, tokens[3].length()-1));
+				String phone=tokens[6];
+				if(phone.length()==0)
+					phone="没有";
+				else
+				if(phone.contains("没有"))
+				System.out.println("电话空");
+				else
+					try{
+					
+						System.out.println("电话："+phone.substring(2,phone.length()-1));
+					}
+				catch(Exception e)
+				{
+					
+				}
+				boolean iswai=false;
+				if(!(tokens[7].contains("不")))
+					iswai=true;
+					System.out.println("是否外卖："+iswai);
+					System.out.println("想吃人数："+tokens[8]);
+					System.out.println("点赞人数"+tokens[9]);
+					System.out.println("人均价格："+tokens[10]);
+					System.out.println("餐厅类型："+tokens[14]);
+				
+				temp.add(null);
+		    	lruCache.getUrlList().add(tokens[3].substring(1, tokens[3].length()-1));
+		    	lruCache.getBitmap(tokens[3].substring(1, tokens[3].length()-1), lruCache.viewCallback);
+		    	temp.add(tokens[1].substring(1, tokens[1].length()-1));
+		    	temp.add(tokens[14]);
+		    	temp.add(tokens[8]);
+		    	temp.add(tokens[9]);
+		    	temp.add(isfree);
+		    	temp.add(iswai);
+		    	temp.add(phone);
+		    	temp.add(tokens[10]);
+		    	data.add(temp);
+						
+			}
+			in.close();	//关闭字符输入流对象
+			urlConn.disconnect();	//断开连接
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Log.d("lsdfjlsdfj","sdfsdflksjadlfkjsdakf");
+		
+		
+		databak.clear();
+    	databak.addAll(data);
     	
+    	currentcount=data.size();
     }
-    
-    
-    public Bitmap getBitmap(String s_url)
-    {   
-    	Bitmap mBitmap = null;   
-    	try {   
-    	URL url = new URL(s_url);   
-    	HttpURLConnection conn = (HttpURLConnection) url.openConnection();   
-    	InputStream is = conn.getInputStream();   
-    	mBitmap = BitmapFactory.decodeStream(is);   
-    	} catch (MalformedURLException e) {   
-    	e.printStackTrace();   
-    	} catch (IOException e) {   
-    	e.printStackTrace();   
-    	}   
-    	return mBitmap;   	
-    }
-
-
+   
     class MyAsyncTask_add extends AsyncTask<String, Integer, String> {
 		@Override
 			protected String doInBackground(String... params) 
 		{
-			    try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				getdata();
+				getalldata();
 	        	Message msg = new Message();
 				msg.what = 2;
 				handler.sendMessage(msg);
@@ -653,7 +637,41 @@ public class Activity_res extends Activity
 		}
     
     
-	
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,  
+            int visibleItemCount, int totalItemCount) {
+		// TODO Auto-generated method stub
+		
+		if(page>10)
+			return;
+		this.last_item_position=firstVisibleItem + visibleItemCount - 1;
+		this.firstVisibleItem=firstVisibleItem;
+		this.visibleItemCount=visibleItemCount;
+		this.totalItemCount=totalItemCount;
+		
+		 if (last_item_position == totalItemCount - 2) 
+	        {
+	        	if(!isloading)
+	        	{
+	        		isloading=true;
+	        		if(list.getFooterViewsCount()==0)
+	        		list.addFooterView(loadingView);
+	        		new MyAsyncTask_add().execute("");
+	        	}
+	        }
+		
+		
+	}
+
+
+	@Override
+	public void onScrollStateChanged(AbsListView arg0, int arg1) 
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+    
    
     
 }
