@@ -7,11 +7,13 @@
 
     <com.origamilabs.library.views.StaggeredGridView
         android:id="@+id/staggeredGridView1"
-        staggered:numColumns="2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarFadeDuration="1000"
         android:scrollbars="vertical"
         staggered:drawSelectorOnTop="true"
-        android:scrollbarFadeDuration="1000"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" /> 
+        staggered:numColumns="2" />
+
+    <include layout="@layout/hong_shopping_cart" />
 
 </RelativeLayout>
