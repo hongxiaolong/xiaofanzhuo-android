@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.carrey.bitmapcachedemo.R;
-import com.qihoo.xiaofanzhuo.restaurantdetailactivity.ForTestMainActivity;
 import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
 
 public class LoginActivity extends Activity {

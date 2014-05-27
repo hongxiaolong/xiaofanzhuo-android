@@ -47,6 +47,7 @@ public class RestaurantDetailActivity extends Activity implements
 	private static final String TAG = "RestaurantDetailActivity";
 
 	private ImageFetcher mImageFetcher;
+	private String mExtraDatas;
 	private BusinessData mDatas;
 	private ArrayList<MenuData> mMenuDataList;
 	
@@ -101,8 +102,8 @@ public class RestaurantDetailActivity extends Activity implements
 		appGlobal = (MyGlobalClass) getApplication(); // 获取应用程序
 
 		Bundle extras = getIntent().getExtras();
-		String extraStr = extras.getString("data");
-		mDatas = new BusinessData(extraStr);	
+		mExtraDatas = extras.getString("data");
+		mDatas = new BusinessData(mExtraDatas);	
 		
 		textString[0] = mDatas.getShopName();
 		textString[1] = mDatas.getShopAverPrice();
@@ -265,7 +266,8 @@ public class RestaurantDetailActivity extends Activity implements
 				&& Math.abs(velocityX) > minVelocity) {
 			// 在此处实现跳转
 			Intent intent = new Intent(RestaurantDetailActivity.this,
-					OrderDishesMainActivity.class);
+					MenuMainActivity.class);
+			intent.putExtra("data", this.mExtraDatas);
 			startActivity(intent);
 
 			Toast.makeText(RestaurantDetailActivity.this, "左滑菜单",
