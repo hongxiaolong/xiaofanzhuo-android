@@ -7,11 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import com.carrey.bitmapcachedemo.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -27,9 +24,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.SimpleAdapter.ViewBinder;
+
+import com.carrey.bitmapcachedemo.R;
 
 
 public class MenuActivity extends Activity {
@@ -175,36 +174,6 @@ public class MenuActivity extends Activity {
 	    		}
 		    	return listMap;
 	    	}
-	    	
-//	    	List<Map<String, Object>> listobject = new LinkedList<Map<String, Object>>();
-//			Map<String, Object> map = new HashMap<String, Object>();
-//			String name="经典沙茶牛肉";
-//			String price="价格：45.0";
-//			map.put("name", name);
-//			map.put("price", price);
-//			map.put("img",getBitmap("http://i1.s1.dpfile.com/pc/ge/35e8464f28043414ba51b6ced682697b(600x1000)/thumb.jpg"));
-//			listobject.add(map);
-//			map = new HashMap<String, Object>();
-//			map.put("name", "牛筋萝卜羹(红烧)");
-//			map.put("price", "价格：58.0");
-//			map.put("img",getBitmap("http://i2.s1.dpfile.com/pc/ge/c231bf55103916d2ca4ddfe5ffa5ff98(600x1000)/thumb.jpg"));
-//			listobject.add(map);
-//			map = new HashMap<String, Object>();
-//			map.put("name", "极品糖醋小排");
-//			map.put("price", "价格：55.0");
-//			map.put("img",getBitmap("http://i3.s1.dpfile.com/pc/ge/99941393464ff2d9f1cf16497daa1066(600x1000)/thumb.jpg"));
-//			listobject.add(map);
-//			map = new HashMap<String, Object>();
-//			map.put("name", "江南菌菇素食");
-//			map.put("price", "价格：25.0");
-//			map.put("img",getBitmap("http://i3.s1.dpfile.com/pc/ge/350a4ba1f7368e3a12809549d35fa467(600x1000)/thumb.jpg"));
-//			listobject.add(map);
-//			map = new HashMap<String, Object>();
-//			map.put("name", "清炒生拆蟹粉");
-//			map.put("price", "价格：70.0");
-//			map.put("img",getBitmap("http://i1.s1.dpfile.com/pc/ge/3adc49bd8447de556916962420749719(600x1000)/thumb.jpg"));
-//			listobject.add(map);		
-//			return listobject;
 		
 	    }
 	
