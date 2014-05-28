@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carrey.bitmapcachedemo.R;
 import com.example.android.bitmapfun.util.ImageFetcher;
@@ -65,7 +66,43 @@ public class MenuMainActivity extends BaseActivity {
 	private ImageView buyImg;// 这是在界面上跑的小图片
 	private int buyNum = 0;//购买数量
 	private BadgeView buyNumView;//显示购买数量的控件
+	private ImageView basketImg;
 
+	/**
+	   * 弹出提示清空对话框
+	   */
+	  private void creatBasketDialog() {
+	    new AlertDialog.Builder(this)
+	        .setMessage("亲，您确定要清空购物篮么?")
+	        .setPositiveButton("YES",
+	            new DialogInterface.OnClickListener() {
+	              @Override
+	              public void onClick(DialogInterface dialog,
+	                  int which) {
+	            	  if (0 == buyNum)
+	            		  Toast.makeText(getApplicationContext(), "亲，购物篮是空的哦，请先点餐!!",
+	 	  					     Toast.LENGTH_SHORT).show();
+	            	  else {
+			            	PreferencesService temp= new PreferencesService(MenuMainActivity.this, "MenuOrder-" + mDatas.getShopName());
+			            	temp.saveToPerferences(mDatas.getShopName(), mDatas.getShopImgUrl(), "0");
+			  				buyNum = 0;
+			  	            buyNumView.setText(buyNum + "");
+			  				buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+			  				buyNumView.show();
+			  				Toast.makeText(getApplicationContext(), "亲，购物篮已清空，您可以尽情点餐!!",
+			  					     Toast.LENGTH_SHORT).show();
+	            	  }
+	              }
+	            })
+	        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+	          @Override
+	          public void onClick(DialogInterface dialog, int which) {
+	            dialog.dismiss();
+	          }
+	        }).show();
+	  }
+	
 	@Override
 	  public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
@@ -104,6 +141,7 @@ public class MenuMainActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.hong_menu_main);
+		basketImg = (ImageView) findViewById (R.id.shopping_img_cart);
 		
 		Bundle extras = getIntent().getExtras();
 		mExtraDatas = extras.getString("data");
@@ -132,13 +170,21 @@ public class MenuMainActivity extends BaseActivity {
 		mPreference = new PreferencesService(MenuMainActivity.this, "MenuOrder-" + mDatas.getShopName());
 		if (0 == buyNum)
 		{
-			Log.i(TAG, "MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
+			mPreference.datasFromPreferencesService();
+			Log.i(TAG, "MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferencesByKey("name"));
 			int arraySize = mPreference.getPerferencesByKey("name").size();
 			buyNum = arraySize;
             buyNumView.setText(buyNum + "");
 			buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
 			buyNumView.show();
 		}
+		basketImg.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				creatBasketDialog();
+			}
+		});
 	}
 
 	private void buttonInit()
@@ -178,8 +224,9 @@ public class MenuMainActivity extends BaseActivity {
 		{
 			if (0 != buyNum)
 			{
-				Log.i(TAG, "onActivityResult    ------  MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
-				int arraySize = mPreference.getPerferencesByKey("name").size();
+				PreferencesService temp= new PreferencesService(MenuMainActivity.this, "MenuOrder-" + mDatas.getShopName());
+				temp.datasFromPreferencesService();
+				int arraySize = temp.getPerferencesByKey("name").size();
 				buyNum = arraySize;
 	            buyNumView.setText(buyNum + "");
 				buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);

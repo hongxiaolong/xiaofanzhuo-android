@@ -8,7 +8,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carrey.bitmapcachedemo.R;
 import com.example.android.bitmapfun.util.ImageFetcher;
@@ -46,12 +49,21 @@ public class MenuOrderActivity extends BaseActivity{
 	private TextView textView;
 	
 	private PreferencesService mPreference;
+	private ImageView shopCart;//购物车
+	private int buyNum = 0;//购买数量
+	private BadgeView buyNumView;//显示购买数量的控件
+	private ImageView basketImg;
+	private ImageView phoneImg;
+	private TextView totalPrice;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hong_menu_order_main);
         mListView=(ListView)findViewById(R.id.menu_order_listview);
+        basketImg = (ImageView) findViewById (R.id.shopping_img_cart);
+        phoneImg = (ImageView) findViewById (R.id.order_phone_img); 
+        totalPrice = (TextView) findViewById (R.id.order_total_price); 
         
         mImageFetcher = new ImageFetcher(this, 75);
 		mImageFetcher.setLoadingImage(R.drawable.empty_photo);
@@ -62,9 +74,21 @@ public class MenuOrderActivity extends BaseActivity{
 		
 		mGroupDatas = new HashMap<String, List<String>>();
 		mPreference = new PreferencesService(MenuOrderActivity.this, "MenuOrder-" + mDatas.getShopName());
-		mGroupDatas.put("name", mPreference.getPerferencesByKey("name"));
-		mGroupDatas.put("url", mPreference.getPerferencesByKey("url"));
-		mGroupDatas.put("price", mPreference.getPerferencesByKey("price"));
+		mPreference.datasFromPreferencesService();
+		shopCartInit();
+		if (0 == buyNum)
+		{
+			Log.i(TAG, "MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferencesByKey("name"));
+			int arraySize = mPreference.getPerferencesByKey("name").size();
+			buyNum = arraySize;
+            buyNumView.setText(buyNum + "");
+			buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+			buyNumView.show();
+		}
+		mGroupDatas.put("name", mPreference.getOrderByKey("name"));
+		mGroupDatas.put("url", mPreference.getOrderByKey("url"));
+		mGroupDatas.put("price", mPreference.getOrderByKey("price"));
+		mGroupDatas.put("count", mPreference.getOrderByKey("count"));
 		
 		mListAdapter = new MyAdapter(this, mImageFetcher);
 		mListAdapter.addItemLast(mGroupDatas);
@@ -72,8 +96,100 @@ public class MenuOrderActivity extends BaseActivity{
 		mListAdapter.notifyDataSetChanged();
 		
 		buttonInit();
+		basketImg.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				creatBasketDialog();
+			}
+		});
+		phoneImg.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				creatPhoneDialog();
+			}
+		});
 
     }
+    
+    private void refresh() {
+        finish();
+        Intent intent = new Intent(MenuOrderActivity.this, MenuOrderActivity.class);
+        intent.putExtra("data", mExtraDatas);
+		startActivityForResult(intent, 1);
+    }
+    
+    /**
+	   * 弹出提示清空对话框
+	   */
+	  private void creatBasketDialog() {
+	    new AlertDialog.Builder(this)
+	        .setMessage("亲，您确定要清空购物篮么?")
+	        .setPositiveButton("YES",
+	            new DialogInterface.OnClickListener() {
+	              @Override
+	              public void onClick(DialogInterface dialog,
+	                  int which) {
+	            	  if (0 == buyNum)
+	            		  Toast.makeText(getApplicationContext(), "亲，购物篮是空的哦，请先点餐!!",
+	 	  					     Toast.LENGTH_SHORT).show();
+	            	  else {
+			            	PreferencesService temp= new PreferencesService(MenuOrderActivity.this, "MenuOrder-" + mDatas.getShopName());
+			            	temp.saveToPerferences(mDatas.getShopName(), mDatas.getShopImgUrl(), "0");
+			  				buyNum = 0;
+			  	            buyNumView.setText(buyNum + "");
+			  				buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+			  				buyNumView.show();
+			  				Toast.makeText(getApplicationContext(), "亲，购物篮已清空，您可以尽情点餐!!",
+			  					     Toast.LENGTH_SHORT).show();
+	            	  }
+	            	  refresh();
+	              }
+	            })
+	        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+	          @Override
+	          public void onClick(DialogInterface dialog, int which) {
+	            dialog.dismiss();
+	          }
+	        }).show();
+	  }
+	  
+	  /**
+	   * 弹出提示拨叫对话框
+	   */
+	  private void creatPhoneDialog() {
+	    new AlertDialog.Builder(this)
+	        .setMessage("亲，呼叫店家点餐: "+ mDatas.getPhoneNum())
+	        .setPositiveButton("呼叫",
+	            new DialogInterface.OnClickListener() {
+	              @Override
+	              public void onClick(DialogInterface dialog,
+	                  int which) {
+	            	  if (0 == buyNum)
+	            		  Toast.makeText(getApplicationContext(), "亲，购物篮是空的哦，请先点餐!!",
+	 	  					     Toast.LENGTH_SHORT).show();
+	            	  else {
+	            		  Intent phoneIntent = new Intent("android.intent.action.CALL",Uri.parse("tel:" + mDatas.getPhoneNum()));
+	            		  startActivity(phoneIntent);//这个activity要把通话界面隐藏以及相应的把菜品界面展示；
+	            	  }
+	              }
+	            })
+	        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+	          @Override
+	          public void onClick(DialogInterface dialog, int which) {
+	            dialog.dismiss();
+	          }
+	        }).show();
+	  }
+    
+    private void shopCartInit() {
+		shopCart = (ImageView) findViewById(R.id.shopping_img_cart);
+		buyNumView = new BadgeView(MenuOrderActivity.this, shopCart);
+		buyNumView.setTextColor(Color.WHITE);
+		buyNumView.setBackgroundColor(Color.RED);
+		buyNumView.setTextSize(12);
+	}
 
 	@Override
 	  public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -114,6 +230,8 @@ public class MenuOrderActivity extends BaseActivity{
 			Typeface typeFace = Typeface.createFromAsset(getAssets(),
 					"fonts/huakangwawa.ttf");
 			textView.setTypeface(typeFace);
+			totalPrice.setTypeface(typeFace);
+			totalPrice.setText("总价：" + mPreference.getOrderTotalPrice());
 			textView.setText(mDatas.getShopName());
 			textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 			
@@ -178,8 +296,8 @@ public class MenuOrderActivity extends BaseActivity{
 					holder.textTitle = (TextView) convertView.findViewById(R.id.menu_name);
 					holder.textPrice = (TextView) convertView.findViewById(R.id.menu_price);
 					holder.buttonAdd = (Button) convertView.findViewById(R.id.button_add);
-					holder.buttonAdd = (Button) convertView.findViewById(R.id.button_delete);
-					
+					holder.buttonDel = (Button) convertView.findViewById(R.id.button_delete);
+					holder.textAmount = (TextView) convertView.findViewById(R.id.menu_amount);
 					convertView.setTag(holder);//为view设置标签
 				} else {
 					holder = (ViewHolder) convertView.getTag();//取出holder
@@ -194,12 +312,11 @@ public class MenuOrderActivity extends BaseActivity{
 				Log.i(TAG, mAdapterDatas.get("url").get(position));
 				Log.i(TAG, mAdapterDatas.get("name").get(position));
 				Log.i(TAG, mAdapterDatas.get("price").get(position));
+				Log.i(TAG, mAdapterDatas.get("count").get(position));
 				mImageFetcher.loadImage(mAdapterDatas.get("url").get(position), holder.imageView);
 				holder.textTitle.setText(mAdapterDatas.get("name").get(position));
-				holder.textPrice.setText(mAdapterDatas.get("price").get(position));
-				
-				final int amount = 5;
-				holder.textAmount.setText(String.valueOf(amount));
+				holder.textPrice.setText("单价: " + mAdapterDatas.get("price").get(position));
+				holder.textAmount.setText(mAdapterDatas.get("count").get(position));
 				
 				holder.buttonAdd.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
@@ -228,6 +345,7 @@ public class MenuOrderActivity extends BaseActivity{
 				mAdapterDatas.put("name", datas.get("name"));
 				mAdapterDatas.put("url", datas.get("url"));
 				mAdapterDatas.put("price", datas.get("price"));
+				mAdapterDatas.put("count", datas.get("count"));
 			}
 		}
 	 

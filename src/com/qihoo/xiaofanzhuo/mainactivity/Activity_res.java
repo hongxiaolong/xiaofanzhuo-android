@@ -623,8 +623,8 @@ public class Activity_res extends BaseActivity implements OnScrollListener
     				 adapter=new MyAdapter();
     			        list.setAdapter(adapter);
     				dialog.cancel();
-    				if(list.getFooterViewsCount()==0)
-    					list.addFooterView(loadingView);
+//    				if(list.getFooterViewsCount()==0)
+//    					list.addFooterView(loadingView);
     				//new MyAsyncTask_add().execute(" ");
     			}
     			else
@@ -641,8 +641,8 @@ public class Activity_res extends BaseActivity implements OnScrollListener
     					adapter=new MyAdapter();
     					list.setAdapter(adapter);
     					isloading=false;
-    					if(list.getFooterViewsCount()==1)
-    						list.removeFooterView(loadingView);
+//    					if(list.getFooterViewsCount()==1)
+//    						list.removeFooterView(loadingView);
     					//adapter.notifyDataSetChanged();
     				}
     				else

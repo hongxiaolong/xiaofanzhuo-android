@@ -98,6 +98,7 @@ public class RestaurantDetailActivity extends BaseActivity implements
 	private ImageView buyImg;// 这是在界面上跑的小图片
 	private int buyNum = 0;// 购买数量
 	private BadgeView buyNumView;// 显示购买数量的控件
+	private ImageView basketImg;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,7 @@ public class RestaurantDetailActivity extends BaseActivity implements
 
 		mImageFetcher = new ImageFetcher(this, 240);
 		mImageFetcher.setLoadingImage(R.drawable.empty_photo);
+		basketImg = (ImageView) findViewById (R.id.res_shopping_img_cart);
 
 		// 手势监听
 		mGestureDetector = new GestureDetector(RestaurantDetailActivity.this);// (OnGestureListener)
@@ -157,13 +159,21 @@ public class RestaurantDetailActivity extends BaseActivity implements
 		}
 		if (0 == buyNum)
 		{
-			Log.i(TAG, "MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
+			mPreference.datasFromPreferencesService();
+			Log.i(TAG, "MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferencesByKey("name"));
 			int arraySize = mPreference.getPerferencesByKey("name").size();
 			buyNum = arraySize;
             buyNumView.setText(buyNum + "");
 			buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
 			buyNumView.show();
 		}
+		basketImg.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				creatBasketDialog();
+			}
+		});
 	}
 
 	@Override
@@ -198,6 +208,41 @@ public class RestaurantDetailActivity extends BaseActivity implements
 	          }
 	        }).show();
 	  }
+	  
+	  /**
+	   * 弹出提示清空对话框
+	   */
+	  private void creatBasketDialog() {
+	    new AlertDialog.Builder(this)
+	        .setMessage("亲，您确定要清空购物篮么?")
+	        .setPositiveButton("YES",
+	            new DialogInterface.OnClickListener() {
+	              @Override
+	              public void onClick(DialogInterface dialog,
+	                  int which) {
+	            	  if (0 == buyNum)
+	            		  Toast.makeText(getApplicationContext(), "亲，购物篮是空的哦，请先点餐!!",
+	 	  					     Toast.LENGTH_SHORT).show();
+	            	  else {
+			            	PreferencesService temp= new PreferencesService(RestaurantDetailActivity.this, "MenuOrder-" + mDatas.getShopName());
+			            	temp.saveToPerferences(mDatas.getShopName(), mDatas.getShopImgUrl(), "0");
+			  				buyNum = 0;
+			  	            buyNumView.setText(buyNum + "");
+			  				buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+			  				buyNumView.show();
+			  				Toast.makeText(getApplicationContext(), "亲，购物篮已清空，您可以尽情点餐!!",
+			  					     Toast.LENGTH_SHORT).show();
+	            	  }
+	              }
+	            })
+	        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+	          @Override
+	          public void onClick(DialogInterface dialog, int which) {
+	            dialog.dismiss();
+	          }
+	        }).show();
+	  }
 	
 	
 	public void horizontalListViewAdapterInit() {
@@ -213,6 +258,7 @@ public class RestaurantDetailActivity extends BaseActivity implements
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				hListViewAdapter.setSelectIndex(position);
+				//会闪烁
 				hListViewAdapter.notifyDataSetChanged();
 			}
 
@@ -229,6 +275,7 @@ public class RestaurantDetailActivity extends BaseActivity implements
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				hListViewAdapter_Spec.setSelectIndex(position);
+				//会闪烁
 				hListViewAdapter_Spec.notifyDataSetChanged();
 			}
 
@@ -266,8 +313,10 @@ public class RestaurantDetailActivity extends BaseActivity implements
 		{
 			if (0 != buyNum)
 			{
-				Log.i(TAG, "onActivityResult    ------  MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
-				int arraySize = mPreference.getPerferencesByKey("name").size();
+				PreferencesService temp= new PreferencesService(RestaurantDetailActivity.this, "MenuOrder-" + mDatas.getShopName());
+				temp.datasFromPreferencesService();
+				Log.i(TAG, "onActivityResult    ------  MenuOrder-" + mDatas.getShopName() + ": " + temp.getPerferencesByKey("name"));
+				int arraySize = temp.getPerferencesByKey("name").size();
 				buyNum = arraySize;
 	            buyNumView.setText(buyNum + "");
 				buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
