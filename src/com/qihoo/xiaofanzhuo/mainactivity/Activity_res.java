@@ -1,33 +1,15 @@
 package com.qihoo.xiaofanzhuo.mainactivity;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
-import com.carrey.bitmapcacheapi.ImageHelper;
-import com.carrey.bitmapcacheapi.ImageLruCacheApi;
-import com.carrey.bitmapcachedemo.R;
-import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
-
-import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -35,35 +17,31 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.SimpleAdapter.ViewBinder;
-import android.widget.Toast;
-import android.os.Build;
 
-public class Activity_res extends Activity implements OnScrollListener 
+import com.carrey.bitmapcacheapi.ImageHelper;
+import com.carrey.bitmapcacheapi.ImageLruCacheApi;
+import com.carrey.bitmapcachedemo.R;
+import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
+
+public class Activity_res extends BaseActivity implements OnScrollListener 
 {
 
 	ProgressDialog dialog;
@@ -81,12 +59,45 @@ public class Activity_res extends Activity implements OnScrollListener
 	int currentcount;
 	int last_item_position,firstVisibleItem , visibleItemCount,totalItemCount;  
 	int page=1;
-	
+	String area="";
 	
 	LinkedList<String> dataforres=new LinkedList<String>();
 	LinkedList<LinkedList<Object>> data=new LinkedList<LinkedList<Object>>();
 	LinkedList<LinkedList<Object>> databak=new LinkedList<LinkedList<Object>>();
 	View loadingView,headview;
+	
+	@Override
+	  public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+	      // return true;//返回真表示返回键被屏蔽掉
+	      creatDialog();// 创建弹出的Dialog
+	    }
+	    return super.onKeyDown(keyCode, event);
+	  }
+
+	  /**
+	   * 弹出提示退出对话框
+	   */
+	  private void creatDialog() {
+	    new AlertDialog.Builder(this)
+	        .setMessage("确定退出app?")
+	        .setPositiveButton("YES",
+	            new DialogInterface.OnClickListener() {
+
+	              @Override
+	              public void onClick(DialogInterface dialog,
+	                  int which) {
+	                MyApplication.getInstance().exit();
+	              }
+	            })
+	        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+	          @Override
+	          public void onClick(DialogInterface dialog, int which) {
+	            dialog.dismiss();
+	          }
+	        }).show();
+	  }
 	
 	class MyAdapter extends BaseAdapter
 	{
@@ -159,6 +170,8 @@ public class Activity_res extends Activity implements OnScrollListener
     		
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_res);
+        Intent intent=getIntent();
+        area=intent.getStringExtra("area");
         
         
         dialog = new ProgressDialog(this); 
@@ -177,10 +190,10 @@ public class Activity_res extends Activity implements OnScrollListener
                 R.layout.list_page_load, null); 
         
         list=(ListView) findViewById(R.id.listView1);
-        list.addFooterView(loadingView);
+        //list.addFooterView(loadingView);
        // list.addHeaderView(headview);
        // list.setSelection(1);
-       list.setOnScrollListener(this);
+       //list.setOnScrollListener(this);
         
        
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -712,8 +725,14 @@ public class Activity_res extends Activity implements OnScrollListener
     	data.addAll(databak);
  
     	String target="";
-		target = "http://182.92.80.201/2.php?content="+URLEncoder.encode("GetShopInfoByShopIDs____1_10");	//要访问的URL地址
-		//target = "http://182.92.80.201/2.php?content="
+    	if(area.equals("1"))
+		target = "http://182.92.80.201/2.php?content="+URLEncoder.encode("GetShopInfoByLocation____大山子");	//要访问的URL地址
+    	else
+    		if(area.equals("2"))
+    			target = "http://182.92.80.201/2.php?content="+URLEncoder.encode("GetShopInfoByLocation____798");	//要访问的URL地址
+    		else
+    			target = "http://182.92.80.201/2.php?content="+URLEncoder.encode("GetShopInfoByLocation____酒仙桥");	//要访问的URL地址
+    	//target = "http://182.92.80.201/2.php?content="
 			//	+base64(content.getText().toString().trim());	//要访问的URL地址
 		URL url;
 		try {
@@ -743,8 +762,8 @@ public class Activity_res extends Activity implements OnScrollListener
 				else
 				if(phone.contains("没有"))
 				System.out.println("电话空");
-				else
-					System.out.println("电话："+phone.substring(2,phone.length()-1));
+				//else
+				//	System.out.println("电话："+phone.substring(2,phone.length()-1));
 				boolean iswai=false;
 				if(!(tokens[7].contains("不")))
 					iswai=true;

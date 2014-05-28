@@ -1,11 +1,14 @@
 package com.qihoo.xiaofanzhuo.mainactivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -20,7 +23,7 @@ import android.widget.Toast;
 import com.carrey.bitmapcachedemo.R;
 import com.qihoo.xiaofanzhuo.restaurantdetailactivity.RestaurantDetailActivity;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseActivity {
 	
 	private EditText userName, password;
 	private CheckBox rem_pw, auto_login;
@@ -29,6 +32,39 @@ public class LoginActivity extends Activity {
     private String userNameValue,passwordValue;
 	private SharedPreferences sp;
 
+	@Override
+	  public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+	      // return true;//返回真表示返回键被屏蔽掉
+	      creatDialog();// 创建弹出的Dialog
+	    }
+	    return super.onKeyDown(keyCode, event);
+	  }
+
+	  /**
+	   * 弹出提示退出对话框
+	   */
+	  private void creatDialog() {
+	    new AlertDialog.Builder(this)
+	        .setMessage("确定退出app?")
+	        .setPositiveButton("YES",
+	            new DialogInterface.OnClickListener() {
+
+	              @Override
+	              public void onClick(DialogInterface dialog,
+	                  int which) {
+	                MyApplication.getInstance().exit();
+	              }
+	            })
+	        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+	          @Override
+	          public void onClick(DialogInterface dialog, int which) {
+	            dialog.dismiss();
+	          }
+	        }).show();
+	  }
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		

@@ -3,21 +3,21 @@ package com.qihoo.xiaofanzhuo.restaurantdetailactivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -37,12 +37,14 @@ import com.origamilabs.library.views.StaggeredGridView;
 import com.qihoo.orderdishes.gc.MenuActivity;
 import com.qihoo.xiaofanzhuo.datafromserver.BusinessData;
 import com.qihoo.xiaofanzhuo.datafromserver.BusinessData.MenuData;
+import com.qihoo.xiaofanzhuo.mainactivity.BaseActivity;
+import com.qihoo.xiaofanzhuo.mainactivity.MyApplication;
 
 /*
  * MenuMainActivity
  * by hongxiaolong
  */
-public class MenuMainActivity extends Activity {
+public class MenuMainActivity extends BaseActivity {
 	
 	private static final String TAG = "MenuMainActivity";
 	
@@ -50,6 +52,8 @@ public class MenuMainActivity extends Activity {
 	private String mExtraDatas;
 	private BusinessData mDatas;
 	private ArrayList<MenuData> mMenuDataList;
+	
+	private PreferencesService mPreference;
 	
 	private ImageButton buttonBack;
 	private ImageButton buttonOrder;
@@ -62,6 +66,40 @@ public class MenuMainActivity extends Activity {
 	private int buyNum = 0;//购买数量
 	private BadgeView buyNumView;//显示购买数量的控件
 
+	@Override
+	  public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+	      // return true;//返回真表示返回键被屏蔽掉
+	      creatDialog();// 创建弹出的Dialog
+	    }
+	    return super.onKeyDown(keyCode, event);
+	  }
+
+	  /**
+	   * 弹出提示退出对话框
+	   */
+	  private void creatDialog() {
+	    new AlertDialog.Builder(this)
+	        .setMessage("确定退出app?")
+	        .setPositiveButton("YES",
+	            new DialogInterface.OnClickListener() {
+
+	              @Override
+	              public void onClick(DialogInterface dialog,
+	                  int which) {
+	                MyApplication.getInstance().exit();
+	              }
+	            })
+	        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+	          @Override
+	          public void onClick(DialogInterface dialog, int which) {
+	            dialog.dismiss();
+	          }
+	        }).show();
+	  }
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -90,6 +128,17 @@ public class MenuMainActivity extends Activity {
 
 		buttonInit();
 		shopCartInit();
+		
+		mPreference = new PreferencesService(MenuMainActivity.this, "MenuOrder-" + mDatas.getShopName());
+		if (0 == buyNum)
+		{
+			Log.i(TAG, "MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
+			int arraySize = mPreference.getPerferencesByKey("name").size();
+			buyNum = arraySize;
+            buyNumView.setText(buyNum + "");
+			buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+			buyNumView.show();
+		}
 	}
 
 	private void buttonInit()
@@ -277,26 +326,8 @@ public class MenuMainActivity extends Activity {
 					buyImg.setImageResource(R.drawable.hong_sign);// 设置buyImg的图片
 					setAnim(buyImg, start_location);// 开始执行动画
 					
-					SharedPreferences mySharedPreferences = mContext.getSharedPreferences(
-							"MenuOrder", 
-							mContext.CONTEXT_IGNORE_SECURITY);
-					SharedPreferences.Editor editor = mySharedPreferences.edit();
-	                String url = mySharedPreferences.getString("Url", "");
-	                String name = mySharedPreferences.getString("Name", "");
-	                String price = mySharedPreferences.getString("Price", "");
-	                
-	                Log.i(TAG, "读出SharedPreferences:" + name + " " + price + " " + url);
-	                
-	                url = url + "_" + infoUrl;
-	                name = name + "_" + infoName;
-	                price = price + "_" + infoPrice;
-	                
-					editor.putString("Url", url);
-					editor.putString("Name", name);
-					editor.putString("Price", price);
-					editor.commit();
-
-					Log.i(TAG, "写入SharedPreferences:" + name + " " + price + " " + url);
+					mPreference.addToPerferences(infoName, infoUrl, infoPrice);        
+					Log.i(TAG, "写入后，MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
 				}
 
 			});

@@ -4,4 +4,5 @@
         <ignore path="src/com/qihoo/xiaofanzhuo/mainactivity/ImageLruCacheApi.java" />
         <ignore path="src/com/qihoo/xiaofanzhuo/mainactivity/MainActivity.java" />
     </issue>
+    <issue id="WorldWriteableFiles" severity="ignore" />
 </lint>

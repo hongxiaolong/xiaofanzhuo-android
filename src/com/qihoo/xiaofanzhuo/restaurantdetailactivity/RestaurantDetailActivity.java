@@ -3,19 +3,19 @@ package com.qihoo.xiaofanzhuo.restaurantdetailactivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -45,7 +45,8 @@ import com.example.android.bitmapfun.util.ImageFetcher;
 import com.qihoo.xiaofanzhuo.datafromserver.BusinessData;
 import com.qihoo.xiaofanzhuo.datafromserver.BusinessData.MenuData;
 import com.qihoo.xiaofanzhuo.mainactivity.Activity_res;
-import com.qihoo.xiaofanzhuo.mainactivity.MyGlobalClass;
+import com.qihoo.xiaofanzhuo.mainactivity.BaseActivity;
+import com.qihoo.xiaofanzhuo.mainactivity.MyApplication;
 import com.qihoo.xiaofanzhuo.mainactivity.WindowsConstant;
 
 /**
@@ -54,7 +55,7 @@ import com.qihoo.xiaofanzhuo.mainactivity.WindowsConstant;
  * @author hongxiaolong
  * 
  */
-public class RestaurantDetailActivity extends Activity implements
+public class RestaurantDetailActivity extends BaseActivity implements
 		OnTouchListener, android.view.GestureDetector.OnGestureListener {
 
 	private static final String TAG = "RestaurantDetailActivity";
@@ -84,7 +85,8 @@ public class RestaurantDetailActivity extends Activity implements
 	private ImageButton buttonBack;
 	private ImageButton buttonOrder;
 
-	private MyGlobalClass appGlobal;
+	private MyApplication appGlobal;
+	private PreferencesService mPreference;
 
 	private HorizontalListView hListView;
 	private HorizontalListView hListView_Spec;
@@ -119,7 +121,7 @@ public class RestaurantDetailActivity extends Activity implements
 		WindowsConstant.displayHeight = displayMetrics.heightPixels;
 
 		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		appGlobal = (MyGlobalClass) getApplication(); // 获取应用程序
+		appGlobal = (MyApplication) getApplication(); // 获取应用程序
 
 		Bundle extras = getIntent().getExtras();
 		mExtraDatas = extras.getString("data");
@@ -139,15 +141,6 @@ public class RestaurantDetailActivity extends Activity implements
 		buttonInit();
 		horizontalListViewAdapterInit();
 
-		SharedPreferences mySharedPreferences = getSharedPreferences(
-				"MenuOrder", PreferenceActivity.MODE_WORLD_WRITEABLE);
-		SharedPreferences.Editor editor = mySharedPreferences.edit();
-		editor.putString("Url", "");
-		editor.putString("Name", "");
-		editor.putString("Price", "");
-		editor.commit();
-		Log.i(TAG, "写入SharedPreferences!!!!!!!!!!!!");
-
 		hListViewAdapter.addItemLast(mMenuDataList);
 		hListViewAdapter.notifyDataSetChanged();
 
@@ -155,8 +148,58 @@ public class RestaurantDetailActivity extends Activity implements
 		hListViewAdapter_Spec.notifyDataSetChanged();
 
 		shopCartInit();
+		
+		mPreference = new PreferencesService(RestaurantDetailActivity.this, "MenuOrder-" + mDatas.getShopName());
+		if (!mPreference.isKeyContains("name"))
+		{
+			mPreference.saveToPerferences(mDatas.getShopName(), mDatas.getShopImgUrl(), "0");
+			Log.i(TAG, "首次写入SharedPreferences---" + "MenuOrder-" + mDatas.getShopName() + "!!!!!!!!!!!!");
+		}
+		if (0 == buyNum)
+		{
+			Log.i(TAG, "MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
+			int arraySize = mPreference.getPerferencesByKey("name").size();
+			buyNum = arraySize;
+            buyNumView.setText(buyNum + "");
+			buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+			buyNumView.show();
+		}
 	}
 
+	@Override
+	  public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+	      // return true;//返回真表示返回键被屏蔽掉
+	      creatDialog();// 创建弹出的Dialog
+	    }
+	    return super.onKeyDown(keyCode, event);
+	  }
+
+	  /**
+	   * 弹出提示退出对话框
+	   */
+	  private void creatDialog() {
+	    new AlertDialog.Builder(this)
+	        .setMessage("确定退出app?")
+	        .setPositiveButton("YES",
+	            new DialogInterface.OnClickListener() {
+
+	              @Override
+	              public void onClick(DialogInterface dialog,
+	                  int which) {
+	                MyApplication.getInstance().exit();
+	              }
+	            })
+	        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+	          @Override
+	          public void onClick(DialogInterface dialog, int which) {
+	            dialog.dismiss();
+	          }
+	        }).show();
+	  }
+	
+	
 	public void horizontalListViewAdapterInit() {
 
 		hListView = (HorizontalListView) findViewById(R.id.horizon_listview_recommend);
@@ -171,7 +214,6 @@ public class RestaurantDetailActivity extends Activity implements
 					int position, long id) {
 				hListViewAdapter.setSelectIndex(position);
 				hListViewAdapter.notifyDataSetChanged();
-				Toast.makeText(RestaurantDetailActivity.this, "Item的点击事件", Toast.LENGTH_SHORT).show();
 			}
 
 		});
@@ -188,7 +230,6 @@ public class RestaurantDetailActivity extends Activity implements
 					int position, long id) {
 				hListViewAdapter_Spec.setSelectIndex(position);
 				hListViewAdapter_Spec.notifyDataSetChanged();
-				Toast.makeText(RestaurantDetailActivity.this, "Item的点击事件", Toast.LENGTH_SHORT).show();
 			}
 
 		});
@@ -417,10 +458,10 @@ public class RestaurantDetailActivity extends Activity implements
 		final View view = addViewToAnimLayout(anim_mask_layout, v,
 				start_location);
 		int[] end_location = new int[2];// 这是用来存储动画结束位置的X、Y坐标
-//		shopCart.getLocationInWindow(end_location);// shopCart是那个购物车
+		// shopCart.getLocationInWindow(end_location);// shopCart是那个购物车
 		end_location[0] = 60;
 		end_location[1] = 1710;
-		
+
 		// 计算位移
 		int endX = 0 - start_location[0] + 40;// 动画位移的X坐标
 		int endY = end_location[1] - start_location[1];// 动画位移的y坐标
@@ -521,8 +562,8 @@ public class RestaurantDetailActivity extends Activity implements
 				holder = new ViewHolder();
 				convertView = mInflater.inflate(
 						R.layout.hong_horizontal_list_item, null);
-				convertView.setClickable ( true ); 
-				
+				convertView.setClickable(true);
+
 				holder.mImage = (ImageView) convertView
 						.findViewById(R.id.img_list_item);
 				holder.mImage.setLayoutParams(new LinearLayout.LayoutParams(
@@ -551,18 +592,21 @@ public class RestaurantDetailActivity extends Activity implements
 			// holder.mImage.setImageBitmap(iconBitmap);
 
 			holder.mImage.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
-					Toast.makeText(mContext, "图片的点击事件", Toast.LENGTH_SHORT).show();
+					
 					int[] start_location = new int[2];// 一个整型数组，用来存储按钮的在屏幕的X、Y坐标
 					v.getLocationInWindow(start_location);// 这是获取购买按钮的在屏幕的X、Y坐标（这也是动画开始的坐标）
 					buyImg = new ImageView(mContext);// buyImg是动画的图片，我的是一个小球（R.drawable.sign）
 					buyImg.setImageResource(R.drawable.hong_sign);// 设置buyImg的图片
 					setAnim(buyImg, start_location);// 开始执行动画
+					
+					mPreference.addToPerferences(infoName, infoUrl, infoPrice);        
+					Log.i(TAG, "写入后，MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
 				}
 			});
-			
+
 			return convertView;
 		}
 
