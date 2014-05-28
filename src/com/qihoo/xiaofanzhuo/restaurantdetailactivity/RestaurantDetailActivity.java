@@ -258,6 +258,25 @@ public class RestaurantDetailActivity extends BaseActivity implements
 		textView04.setText(textString[4]);
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// 当otherActivity中返回数据的时候，会响应此方法
+		// requestCode和resultCode必须与请求startActivityForResult()和返回setResult()的时候传入的值一致。
+		if (requestCode == 1) 
+		{
+			if (0 != buyNum)
+			{
+				Log.i(TAG, "onActivityResult    ------  MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
+				int arraySize = mPreference.getPerferencesByKey("name").size();
+				buyNum = arraySize;
+	            buyNumView.setText(buyNum + "");
+				buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+				buyNumView.show();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
 	public void buttonInit() {
 		buttonBack = (ImageButton) findViewById(R.id.button_back);
 		buttonBack.setOnClickListener(new OnClickListener() {
@@ -269,10 +288,11 @@ public class RestaurantDetailActivity extends BaseActivity implements
 		buttonOrder = (ImageButton) findViewById(R.id.button_order);
 		buttonOrder.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				
 				Intent intent = new Intent(RestaurantDetailActivity.this,
 						MenuMainActivity.class);
 				intent.putExtra("data", mExtraDatas);
-				startActivity(intent);
+				startActivityForResult(intent, 1);
 			}
 		});
 

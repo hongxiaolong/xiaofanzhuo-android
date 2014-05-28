@@ -51,6 +51,9 @@
         <activity
             android:name="com.qihoo.xiaofanzhuo.restaurantdetailactivity.MenuMainActivity" >
         </activity>
+        <activity
+            android:name="com.qihoo.xiaofanzhuo.restaurantdetailactivity.MenuOrderActivity" >
+        </activity>
         
     </application>
 

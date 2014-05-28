@@ -69,8 +69,9 @@ public class Activity_res extends BaseActivity implements OnScrollListener
 	@Override
 	  public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-	      // return true;//返回真表示返回键被屏蔽掉
-	      creatDialog();// 创建弹出的Dialog
+	    	this.finish();
+	    	return true;//返回真表示返回键被屏蔽掉
+//	      creatDialog();// 创建弹出的Dialog
 	    }
 	    return super.onKeyDown(keyCode, event);
 	  }

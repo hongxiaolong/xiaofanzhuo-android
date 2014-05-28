@@ -153,7 +153,9 @@ public class MenuMainActivity extends BaseActivity {
 		buttonBack = (ImageButton) findViewById(R.id.menu_button_back);
 		buttonBack.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				finish();
+				Intent intent = new Intent();
+				MenuMainActivity.this.setResult(1, intent); 
+				MenuMainActivity.this.finish();
 			}
 		});
 		
@@ -161,10 +163,30 @@ public class MenuMainActivity extends BaseActivity {
 		buttonOrder.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Intent intent = new Intent(MenuMainActivity.this,
-						MenuActivity.class);
-				startActivity(intent);
+						MenuOrderActivity.class);
+				intent.putExtra("data", mExtraDatas);
+				startActivityForResult(intent, 1);
 			}
 		});
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// 当otherActivity中返回数据的时候，会响应此方法
+		// requestCode和resultCode必须与请求startActivityForResult()和返回setResult()的时候传入的值一致。
+		if (requestCode == 1) 
+		{
+			if (0 != buyNum)
+			{
+				Log.i(TAG, "onActivityResult    ------  MenuOrder-" + mDatas.getShopName() + ": " + mPreference.getPerferences().get("name"));
+				int arraySize = mPreference.getPerferencesByKey("name").size();
+				buyNum = arraySize;
+	            buyNumView.setText(buyNum + "");
+				buyNumView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+				buyNumView.show();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -292,6 +314,7 @@ public class MenuMainActivity extends BaseActivity {
 			final String infoUrl = mInfos.get(position).getFoodImgUrl().toString();
 			final String infoName = mInfos.get(position).getFood().toString();
 			final String infoPrice = mInfos.get(position).getFoodPrice().toString();
+			final String infoHeight = mInfos.get(position).getHeight().toString();
 
 			if (convertView == null) {
 				LayoutInflater layoutInflator = LayoutInflater.from(parent
@@ -311,7 +334,7 @@ public class MenuMainActivity extends BaseActivity {
 
 			// float iHeight = ((float) 200 / 183 * duitangInfo.getHeight());
 			holder.imageView.setLayoutParams(new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.MATCH_PARENT, (int) 150));
+					LinearLayout.LayoutParams.MATCH_PARENT, (int) Integer.valueOf(infoHeight).intValue()));
 
 			holder.contentView.setText(infoName + " " + infoPrice);
 			mImageFetcher.loadImage(infoUrl, holder.imageView);

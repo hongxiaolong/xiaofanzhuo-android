@@ -42,7 +42,7 @@ public class BusinessData {
 	};
 
 	public final static String[] menuKeyArray= {
-		"Food", "FoodPrice", "IsRecommend", "IsSpec", "FoodImgUrl"
+		"Food", "FoodPrice", "IsRecommend", "IsSpec", "FoodImgUrl", "Width", "Height"
 	};
 	
 	/*
@@ -181,6 +181,12 @@ public class BusinessData {
 		}
 		public String isSpecial(){
 			return MenuMap.get("IsSpec");
+		}
+		public String getWidth(){
+			return MenuMap.get("Width");
+		}
+		public String getHeight(){
+			return MenuMap.get("Height");
 		}
 		
 	}
