@@ -247,9 +247,7 @@ public class MenuOrderActivity extends BaseActivity{
 			buttonOrder = (ImageButton) findViewById(R.id.order_button_order);
 			buttonOrder.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
-					Intent intent = new Intent(MenuOrderActivity.this,
-							MenuActivity.class);
-					startActivity(intent);
+					creatPhoneDialog();
 				}
 			});
 		}
@@ -259,6 +257,7 @@ public class MenuOrderActivity extends BaseActivity{
 			private Context mContext;
 			private LayoutInflater inflater = null;//用于导入文件布局
 			private ImageFetcher mImageFetcher;
+			private int mPosition;
 
 			public MyAdapter(Context context, ImageFetcher f) {//构造器
 				mContext = context;
@@ -287,7 +286,7 @@ public class MenuOrderActivity extends BaseActivity{
 
 			@Override
 			public View getView(int position, View convertView, ViewGroup patent) {
-				// TODO Auto-generated method stub
+				mPosition = position;
 				ViewHolder holder = null;
 				if (convertView == null) {
 					holder = new ViewHolder();//获取ViewHolder对象
@@ -309,10 +308,6 @@ public class MenuOrderActivity extends BaseActivity{
 				holder.textPrice.setTypeface(typeFace);
 				holder.textAmount.setTypeface(typeFace);
 				
-				Log.i(TAG, mAdapterDatas.get("url").get(position));
-				Log.i(TAG, mAdapterDatas.get("name").get(position));
-				Log.i(TAG, mAdapterDatas.get("price").get(position));
-				Log.i(TAG, mAdapterDatas.get("count").get(position));
 				mImageFetcher.loadImage(mAdapterDatas.get("url").get(position), holder.imageView);
 				holder.textTitle.setText(mAdapterDatas.get("name").get(position));
 				holder.textPrice.setText("单价: " + mAdapterDatas.get("price").get(position));
@@ -321,11 +316,15 @@ public class MenuOrderActivity extends BaseActivity{
 				holder.buttonAdd.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						Log.i(TAG, "buttonAdd!!!!!!");
+						mPreference.addOrSubtractFromOrder(mAdapterDatas.get("url").get(mPosition), true);
+						refresh();
 					}
 				});
 				holder.buttonDel.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						Log.i(TAG, "buttonDel!!!!!!");
+						mPreference.addOrSubtractFromOrder(mAdapterDatas.get("url").get(mPosition), false);
+						refresh();
 					}
 				});
 				

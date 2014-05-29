@@ -32,11 +32,11 @@ public class ImageLruCacheApi {
 	public HashMap<String, ArrayList<SoftReference<BitmapCallback>>> mCallbacks = new HashMap<String, ArrayList<SoftReference<BitmapCallback>>>();
 	public HashMap<String, ArrayList<SoftReference<BitmapViewCallback>>> mViewCallbacks = new HashMap<String, ArrayList<SoftReference<BitmapViewCallback>>>();
 	// LruCache
-	private static final int MEM_MAX_SIZE = 10 * 1024 * 1024;// MEM 4MB
+	private static final int MEM_MAX_SIZE = 100 * 1024 * 1024;// MEM 4MB
 	private LruCache<String, Bitmap> mMemoryCache = null;
 
 	// DiskLruCache
-	private static final int DISK_MAX_SIZE = 32 * 1024 * 1024;// SD 32MB
+	private static final int DISK_MAX_SIZE = 100 * 1024 * 1024;// SD 32MB
 	private DiskLruCache mDiskCacke = null;
 
 	// 构造函数

@@ -230,6 +230,38 @@ public class PreferencesService {
 	}
 	
 	/**
+	 * @描 述：下单时加减按钮的作用
+	 * @param true = "+", false = "-"
+	 * @return 
+	 */
+	public void addOrSubtractFromOrder(String url, boolean operation)
+	{
+		List<String> names = this.mPreferencesNames;
+		List<String> urls = this.mPreferencesUrls;
+		List<String> prices = this.mPreferencesPrices;
+		for (int i = urls.size()-1; i >= 0; i--)
+		{
+			if (urls.get(i) == url)
+			{
+				if (operation){
+					urls.add(urls.get(i));
+					names.add(names.get(i));
+					prices.add(prices.get(i));
+				} else {
+					urls.remove(i);
+					names.remove(i);
+					prices.remove(i);
+				}
+				break;
+			}
+		}
+		saveToPerferences("name", "url", "price");
+		for (int i = 0 ; i < urls.size(); ++i) 
+			addToPerferences(names.get(i), urls.get(i), prices.get(i));
+		return;
+	}
+	
+	/**
 	 * @描 述：返回下单页的总价
 	 * @return 
 	 */

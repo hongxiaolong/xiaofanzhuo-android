@@ -13,14 +13,14 @@
     <ImageView
         android:id="@+id/img_list_item"
         android:layout_width="wrap_content"
-        android:duplicateParentState="true"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:duplicateParentState="true" />
 
     <TextView
         android:id="@+id/text_list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:duplicateParentState="false"  
+        android:duplicateParentState="false"
         android:gravity="center" />
 
 </LinearLayout>

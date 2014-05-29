@@ -299,10 +299,10 @@ public class RestaurantDetailActivity extends BaseActivity implements
 		// 设置文字信息并显示
 		textView.setText(textString[0]);
 		textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-		textView01.setText(textString[1]);
-		textView02.setText(textString[2]);
-		textView03.setText(textString[3]);
-		textView04.setText(textString[4]);
+		textView01.setText("均价：" + textString[1]);
+		textView02.setText("种类：" + textString[2]);
+		textView03.setText("地址：" + textString[3]);
+		textView04.setText("电话：" + textString[4]);
 	}
 
 	@Override
@@ -653,7 +653,7 @@ public class RestaurantDetailActivity extends BaseActivity implements
 				convertView.setSelected(false);
 			}
 
-			holder.mTitle.setText(infoName + "￥ " + infoPrice);
+			holder.mTitle.setText(infoName + " ￥ " + infoPrice);
 			mImageFetcher.loadImage(infoUrl.toString(), holder.mImage);
 			Log.i(TAG, infoUrl);
 			// iconBitmap = getPropThumnail(imageURL);
